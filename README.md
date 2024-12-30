@@ -1,12 +1,13 @@
-# 🛠️ ZKP-Based Contract Interaction with Arbitrum Stylus
+# 🚩 Challenge: 🔐 ZKP-Based Contract Interactions
 
-🚀 This project demonstrates how to interact with Zero-Knowledge Proof (ZKP) circuits and smart contracts deployed on a local Arbitrum Stylus dev node. It includes three main functionalities:
+🎫 Build Zero-Knowledge Proof (ZKP) based contract interactions with Arbitrum Stylus:
 
-1. **Age Verifier**: Verify if a user is above a certain age using ZKP.
-2. **Balance Checker**: Verify if a user's balance exceeds a threshold.
-3. **Password Verifier**: Verify a password combination using ZKP.
+👷‍♀️ In this challenge, you'll build and deploy smart contracts that utilize Zero-Knowledge Proofs for private verification of various conditions. You'll work with ZKP circuits, deploy them to an Arbitrum Stylus dev node, and create a frontend that allows users to generate and verify proofs! 🚀
 
-## 📦 Environment Setup
+🌟 The final deliverable is a full-stack application featuring three different ZKP verification scenarios: age verification, balance checking, and password verification. Deploy your contracts to a testnet, then build and upload your app to a public web server.
+
+
+## Checkpoint 0: 📦 Environment Setup 📚
 
 Before starting, ensure you have the following installed:
 
@@ -18,12 +19,12 @@ Before starting, ensure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/abhi152003/speedrun-rust.git
+cd speedrun-rust
 git checkout zkp
 ```
 
-## 🚀 Steps to Run the Project
+## Checkpoint 1: 🚀 Start Your Dev Environment
 
 ### Step 1: Start the Nitro Dev Node
 
@@ -65,7 +66,7 @@ git checkout zkp
 
 > The app will be available at [http://localhost:3000](http://localhost:3000).
 
-## 💻 Features and Usage
+## Checkpoint 2: 💫 Explore the Features
 
 ### 1. Age Verifier
 
@@ -120,7 +121,7 @@ git checkout zkp
   - Expected Hash: `4321`
 - The app generates a zk-proof to verify if the provided combination matches the expected hash.
 
-## 🔧 Modify Circuits and Contracts
+## Checkpoint 3: 🛠 Modify and Deploy Contracts
 
 You can tinker with circuit logic by modifying files in the `packages/circuits` folder. After making changes, regenerate contracts using these commands:
 
@@ -155,7 +156,7 @@ Run the script again:
 bash run-dev-node.sh
 ```
 
-## 🚢 Deploy Your App
+## Checkpoint 4: 🚢 Ship your frontend! 🚁
 
 To deploy your app to Vercel:
 
@@ -170,7 +171,7 @@ For production deployment:
 yarn vercel --prod
 ```
 
-## 📜 Contract Verification
+## Checkpoint 5: 📜 Contract Verification
 
 You can verify your deployed smart contract using:
 
