@@ -1,161 +1,62 @@
-# 🛠️ ZKP-Based Contract Interaction with Arbitrum Stylus
+#!/bin/bash
 
-🚀 This project demonstrates how to interact with Zero-Knowledge Proof (ZKP) circuits and smart contracts deployed on a local Arbitrum Stylus dev node. It includes three main functionalities:
+# Start Nitro dev node in the background
+echo "Starting Nitro dev node..."
+docker run --rm --name nitro-dev -p 8547:8547 offchainlabs/nitro-node:v3.2.1-d81324d --dev --http.addr 0.0.0.0 --http.api=net,web3,eth,debug --http.corsdomain="*" &
 
-1. **Age Verifier**: Verify if a user is above a certain age using ZKP.
-2. **Balance Checker**: Verify if a user's balance exceeds a threshold.
-3. **Password Verifier**: Verify a password combination using ZKP.
+# Wait for the node to initialize
+echo "Waiting for the Nitro node to initialize..."
+until [[ "$(curl -s -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}' \
+  http://127.0.0.1:8547)" == *"result"* ]]; do
+    sleep 0.1
+done
+echo "Nitro node is running!"
 
-## 📦 Environment Setup
+# Compile the Solidity contract
+echo "Compiling Solidity contract..."
+solcjs --bin --abi --optimize -o build/ contracts/AgeVerifier.sol
 
-Before starting, ensure you have the following installed:
+if [[ $? -ne 0 ]]; then
+    echo "Error: Solidity compilation failed"
+    exit 1
+fi
 
-- [Node.js (>= v18.17)](https://nodejs.org/en/download/)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
-- [Git](https://git-scm.com/downloads)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+# Extract compiled contract binary
+contract_bin=$(cat build/contracts_AgeVerifier_sol_Groth16Verifier.bin)
+contract_abi=$(cat build/contracts_AgeVerifier_sol_Groth16Verifier.abi)
 
-### Clone the Repository
+if [[ -z "$contract_bin" || -z "$contract_abi" ]]; then
+    echo "Error: Compilation output not found"
+    exit 1
+fi
 
-```bash
-git clone https://github.com/your-repo-name.git
-cd your-repo-name
-git checkout zkp
-```
+echo "Solidity contract compiled successfully."
 
-## 🚀 Steps to Run the Project
+# Deploy the contract to Nitro dev node
+echo "Deploying the Solidity contract..."
+deploy_output=$(cast send --private-key 0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659 \
+  --rpc-url http://127.0.0.1:8547 \
+  --create 0x$contract_bin)
 
-### Step 1: Start the Nitro Dev Node
+# Extract deployment transaction hash and contract address
+deployment_tx=$(echo "$deploy_output" | grep -oE '0x[a-fA-F0-9]{64}')
+contract_address=$(echo "$deploy_output" | grep -oE '0x[a-fA-F0-9]{40}')
 
-1. Navigate to the `cargo-stylus` folder:
-   ```bash
-   cd packages/cargo-stylus
-   ```
+if [[ -z "$deployment_tx" ]]; then
+    echo "Error: Contract deployment failed. Output:"
+    echo "$deploy_output"
+    exit 1
+fi
+# Output ABI for future use
+echo "$contract_abi" > build/AgeVerifierABI.json
+echo "ABI saved to build/AgeVerifierABI.json"
 
-2. Run the `run-dev-node.sh` script:
-   ```bash
-   bash run-dev-node.sh
-   ```
-   This script:
-   - Spins up an Arbitrum Stylus Nitro dev node in Docker.
-   - Deploys the `AgeVerifier.sol` contract.
-   - Generates the ABI for interacting with the contract.
-
-> The dev node will be accessible at `http://localhost:8547`.
-
-### Step 2: Start the Frontend
-
-1. Navigate to the `nextjs` folder:
-   ```bash
-   cd ../nextjs
-   ```
-
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```
-
-3. Start the development server:
-   ```bash
-   yarn dev
-   ```
-
-> The app will be available at [http://localhost:3000](http://localhost:3000).
-
-## 💻 Features and Usage
-
-### 1. Age Verifier
-
-- Navigate to the "Debug Contracts" tab in the frontend.
-- This feature interacts with the **Age Verifier** contract, which was generated from the `AgeVerifier.circom` circuit located in `packages/circuits`.
-- Circuit generation commands:
-  ```bash
-  circom AgeVerifier.circom --r1cs --wasm --sym
-  npx snarkjs groth16 setup AgeVerifier.r1cs pot12_final.ptau AgeVerifier_0000.zkey
-  npx snarkjs zkey contribute AgeVerifier_0000.zkey AgeVerifier_final.zkey --name="Contributor" -v
-  npx snarkjs zkey export verificationkey AgeVerifier_final.zkey verification_key.json
-  npx snarkjs zkey export solidityverifier AgeVerifier_final.zkey AgeVerifier.sol
-  ```
-- Choose a birthdate in the frontend to generate a zk-proof, which will be verified on-chain using the deployed `AgeVerifier.sol` contract.
-
-### 2. Balance Checker
-
-- First, you need to modify the contract deployment:
-  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "AgeVerifier"
-  2. Replace them with "BalanceChecker"
-  3. Re-run the script using `bash run-dev-node.sh`
-- Access it at [http://localhost:3000/balanceChecker](http://localhost:3000/balanceChecker).
-- Enter your balance and a threshold balance.
-- The app generates a zk-proof to verify if your balance exceeds the threshold.
-
-### 3. Password Verifier
-
-- First, you need to modify the contract deployment:
-  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "AgeVerifier"
-  2. Replace them with "PasswordVerifier"
-  3. Re-run the script using `bash run-dev-node.sh`
-- Access it at [http://localhost:3000/passwordVerifier](http://localhost:3000/passwordVerifier).
-- Example inputs:
-  - Combination: `1234`
-  - Expected Hash: `4321`
-- The app generates a zk-proof to verify if the provided combination matches the expected hash.
-
-## 🔧 Modify Circuits and Contracts
-
-You can tinker with circuit logic by modifying files in the `packages/circuits` folder. After making changes, regenerate contracts using these commands:
-
-```bash
-circom <YourCircuit>.circom --r1cs --wasm --sym
-npx snarkjs groth16 setup <YourCircuit>.r1cs pot12_final.ptau <YourCircuit>_0000.zkey
-npx snarkjs zkey contribute <YourCircuit>_0000.zkey <YourCircuit>_final.zkey --name="Contributor" -v
-npx snarkjs zkey export verificationkey <YourCircuit>_final.zkey verification_key.json
-npx snarkjs zkey export solidityverifier <YourCircuit>_final.zkey <YourCircuit>.sol
-```
-
-Deploy new contracts by placing them in `packages/cargo-stylus/contracts` and running:
-
-```bash
-bash run-dev-node.sh
-```
-
-## 🛠️ Debugging Tips
-
-### Fixing Line Endings for Shell Scripts on Windows (CRLF Issue)
-
-If you encounter errors like `Command not found`, convert line endings to LF:
-
-```bash
-sudo apt install dos2unix
-dos2unix run-dev-node.sh
-chmod +x run-dev-node.sh
-```
-
-Run the script again:
-```bash
-bash run-dev-node.sh
-```
-
-## 🚢 Deploy Your App
-
-To deploy your app to Vercel:
-
-```bash
-yarn vercel
-```
-
-Follow Vercel's instructions to get a public URL.
-
-For production deployment:
-```bash
-yarn vercel --prod
-```
-
-## 📜 Contract Verification
-
-You can verify your deployed smart contract using:
-
-```bash
-cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
-```
-
-Replace `$deployment_tx` with your deployment transaction hash.
+# Monitor the Nitro node
+while true; do
+    if ! docker ps | grep -q nitro-dev; then
+        echo "Nitro node container stopped unexpectedly"
+        exit 1
+    fi
+    sleep 5
+done

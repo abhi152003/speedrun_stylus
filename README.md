@@ -45,6 +45,9 @@ git checkout zkp
 
 ### Step 2: Start the Frontend
 
+![Frontend Interface](images/frontend-interface.png)
+*The main application interface*
+
 1. Navigate to the `nextjs` folder:
    ```bash
    cd ../nextjs
@@ -66,6 +69,9 @@ git checkout zkp
 
 ### 1. Age Verifier
 
+![Age Verifier Interface](images/age-verifier.png)
+*Age verification interface and process flow*
+
 - Navigate to the "Debug Contracts" tab in the frontend.
 - This feature interacts with the **Age Verifier** contract, which was generated from the `AgeVerifier.circom` circuit located in `packages/circuits`.
 - Circuit generation commands:
@@ -80,12 +86,34 @@ git checkout zkp
 
 ### 2. Balance Checker
 
+![Balance Checker Interface](images/balance-checker.png)
+*Balance verification interface and process flow*
+
+- First, you need to modify the contract deployment:
+  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "AgeVerifier"
+  2. Replace them with "BalanceChecker"
+  3. Re-run the script using `bash run-dev-node.sh`
+  4. After the script runs successfully, copy the deployed contract address from the terminal output
+  5. Navigate to `packages/nextjs/app/balanceChecker/page.tsx`
+  6. Replace the existing contract address with your newly deployed contract address as shown below :
+  ![Contract Address](images/contract-address.png)
 - Access it at [http://localhost:3000/balanceChecker](http://localhost:3000/balanceChecker).
 - Enter your balance and a threshold balance.
 - The app generates a zk-proof to verify if your balance exceeds the threshold.
 
 ### 3. Password Verifier
 
+![Password Verifier Interface](images/password-verifier.png)
+*Password verification interface and process flow*
+
+- First, you need to modify the contract deployment:
+  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "AgeVerifier"
+  2. Replace them with "PasswordVerifier"
+  3. Re-run the script using `bash run-dev-node.sh`
+  4. After the script runs successfully, copy the deployed contract address from the terminal output
+  5. Navigate to `packages/nextjs/app/passwordVerifier/page.tsx`
+  6. Replace the existing contract address with your newly deployed contract address as shown below : 
+  ![Contract Address](images/contract-address.png)
 - Access it at [http://localhost:3000/passwordVerifier](http://localhost:3000/passwordVerifier).
 - Example inputs:
   - Combination: `1234`

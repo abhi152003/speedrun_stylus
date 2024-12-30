@@ -15,7 +15,7 @@ export default function BalanceChecker() {
     const [error, setError] = useState<string | null>(null);
 
     // Replace with your deployed contract address on Arbitrum Stylus
-    const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527";
+    const CONTRACT_ADDRESS = "0x1294b86822ff4976BfE136cB06CF43eC7FCF2574";
     const CONTRACT_ABI = [
         {
             "inputs": [
