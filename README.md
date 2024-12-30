@@ -184,5 +184,3 @@ Replace `$deployment_tx` with your deployment transaction hash.
 ## 🏁 Next Steps
 
 Explore more challenges or contribute to this project!
-
-💬 Questions? Join our [developer chat](https://t.me/joinchat/F7nCRK3kI93PoCOk).
