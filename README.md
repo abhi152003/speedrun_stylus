@@ -1,4 +1,4 @@
-# 🚩 Challenge: 🔐 ZKP-Based Contract Interactions
+# 🚩 Challenge #5 : 🔐 ZKP-Based Contract Interactions
 
 🎫 Build Zero-Knowledge Proof (ZKP) based contract interactions with Arbitrum Stylus:
 
@@ -21,7 +21,7 @@ Before starting, ensure you have the following installed:
 ```bash
 git clone https://github.com/abhi152003/speedrun-rust.git
 cd speedrun-rust
-git checkout zkp
+git checkout stylus-zkp
 ```
 
 ## Checkpoint 1: 🚀 Start Your Dev Environment
