@@ -6,6 +6,20 @@
 
 🌟 The final deliverable is a full-stack application featuring three different ZKP verification scenarios: age verification, balance checking, and password verification. Deploy your contracts to a testnet, then build and upload your app to a public web server.
 
+### How ZKP Integration Works
+This project leverages Zero-Knowledge Proofs (ZKPs) to enable private verification of conditions (e.g., age, balance, password) on Arbitrum Stylus. Here's the workflow:
+
+1. **Circuit Design**: The ZKP logic is defined in `.circom` files (e.g., `AgeVerifier.circom`) using the Circom language. These circuits encode the rules for verification (e.g., "is age ≥ 18?") without revealing the inputs.
+2. **Proof System Setup**: We use the `snarkjs` library with the Groth16 proving system to generate proving and verification keys. The trusted setup is simulated using a pre-existing `pot12_final.ptau` file.
+3. **Contract Generation**: The verification key is exported to a Solidity contract (e.g., `AgeVerifier.sol`) that runs on Arbitrum Stylus, allowing on-chain verification of zk-proofs.
+4. **Frontend Interaction**: The Next.js frontend uses WebAssembly (`.wasm`) outputs from Circom to generate proofs locally, which are then submitted to the deployed contract for verification.
+5. **Arbitrum Stylus Advantage**: Stylus’ Rust-based environment enables efficient execution of the verifier contract, reducing gas costs compared to traditional EVM-based ZKP verification.
+
+This integration ensures privacy (inputs remain off-chain) and scalability (proof verification is lightweight on-chain).
+
+We opted for Groth16 due to its efficiency in proof generation and verification, which aligns with Arbitrum Stylus' goal of low-cost execution. While it requires a trusted setup, this is acceptable for a proof-of-concept; future iterations could explore trustless setups like PLONK.
+
+Arbitrum Stylus’ support for Rust-based contracts allows us to optimize the verifier logic beyond Solidity’s limitations. The ZKP verifier contracts (e.g., `AgeVerifier.sol`) are deployed to a Stylus dev node, leveraging its lower gas fees and faster execution compared to Ethereum L1.
 
 ## Checkpoint 0: 📦 Environment Setup 📚
 
@@ -70,6 +84,10 @@ git checkout stylus-zkp
 
 ### 1. Age Verifier
 
+- **Purpose**: Prove that a user’s age meets a threshold (e.g., ≥ 18) without disclosing their birthdate.
+- **Circuit Logic**: The `AgeVerifier.circom` circuit takes a private input (birthdate) and a public input (threshold year). It computes the age and outputs a proof if the condition is met.
+- **On-Chain Verification**: The generated proof is submitted to `AgeVerifier.sol` on the Stylus dev node, which uses the verification key to confirm validity.
+
 ![Age Verifier Interface](images/age-verifier.png)
 *Age verification interface and process flow*
 
@@ -87,6 +105,10 @@ git checkout stylus-zkp
 
 ### 2. Balance Checker
 
+- **Purpose**: Prove that a user’s balance exceeds a specified threshold (e.g., ≥ 1000 wei) without revealing the exact balance amount.
+- **Circuit Logic**: The `BalanceChecker.circom` circuit takes a private input (user’s balance) and a public input (threshold balance). It performs a comparison to check if `balance >= threshold` and outputs a proof if the condition is satisfied. The circuit uses constraints to ensure the balance is a valid positive integer and the comparison is cryptographically sound.
+- **On-Chain Verification**: The generated proof is submitted to `BalanceChecker.sol` deployed on the Arbitrum Stylus dev node. The contract uses the embedded Groth16 verification key to validate the proof against the public threshold, returning `true` if the user’s balance meets or exceeds the threshold, all while keeping the balance private.
+
 ![Balance Checker Interface](images/balance-checker.png)
 *Balance verification interface and process flow*
 
@@ -103,6 +125,10 @@ git checkout stylus-zkp
 - The app generates a zk-proof to verify if your balance exceeds the threshold.
 
 ### 3. Password Verifier
+
+- **Purpose**: Prove that a user knows a secret password (or combination) matching an expected hash without revealing the password itself.
+- **Circuit Logic**: The `PasswordVerifier.circom` circuit takes a private input (the user’s password or combination) and a public input (the expected hash). It computes the hash of the password using a hash function (e.g., MiMC or Poseidon, chosen for ZKP compatibility) within the circuit and checks if it equals the expected hash. The circuit outputs a proof if the hashes match, ensuring the password remains confidential.
+- **On-Chain Verification**: The generated proof is submitted to `PasswordVerifier.sol` on the Stylus dev node. The contract verifies the proof using the Groth16 verification key, confirming that the user’s input matches the expected hash without exposing the password. This enables secure, private authentication on-chain.
 
 ![Password Verifier Interface](images/password-verifier.png)
 *Password verification interface and process flow*
