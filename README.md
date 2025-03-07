@@ -60,7 +60,7 @@ git checkout stylus-zkp
 
 ### Step 2: Start the Frontend
 
-![Frontend Interface](images/frontend-interface.png)
+![Frontend Interface](https://github.com/user-attachments/assets/3502c4b8-7bb6-4ea4-92e0-cbbf1ebe7039)
 *The main application interface*
 
 1. Navigate to the `nextjs` folder:
