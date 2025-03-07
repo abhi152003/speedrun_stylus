@@ -88,7 +88,7 @@ git checkout stylus-zkp
 - **Circuit Logic**: The `AgeVerifier.circom` circuit takes a private input (birthdate) and a public input (threshold year). It computes the age and outputs a proof if the condition is met.
 - **On-Chain Verification**: The generated proof is submitted to `AgeVerifier.sol` on the Stylus dev node, which uses the verification key to confirm validity.
 
-![Age Verifier Interface](images/age-verifier.png)
+![Age Verifier Interface](https://github.com/user-attachments/assets/36c8961b-a3c2-4dee-ab53-929ddb8a265b)
 *Age verification interface and process flow*
 
 - Navigate to the "Debug Contracts" tab in the frontend.
@@ -109,7 +109,7 @@ git checkout stylus-zkp
 - **Circuit Logic**: The `BalanceChecker.circom` circuit takes a private input (user’s balance) and a public input (threshold balance). It performs a comparison to check if `balance >= threshold` and outputs a proof if the condition is satisfied. The circuit uses constraints to ensure the balance is a valid positive integer and the comparison is cryptographically sound.
 - **On-Chain Verification**: The generated proof is submitted to `BalanceChecker.sol` deployed on the Arbitrum Stylus dev node. The contract uses the embedded Groth16 verification key to validate the proof against the public threshold, returning `true` if the user’s balance meets or exceeds the threshold, all while keeping the balance private.
 
-![Balance Checker Interface](images/balance-checker.png)
+![Balance Checker Interface](https://github.com/user-attachments/assets/a67edf35-119d-4766-874d-9f92e36c7150)
 *Balance verification interface and process flow*
 
 - First, you need to modify the contract deployment:
@@ -119,7 +119,7 @@ git checkout stylus-zkp
   4. After the script runs successfully, copy the deployed contract address from the terminal output
   5. Navigate to `packages/nextjs/app/balanceChecker/page.tsx`
   6. Replace the existing contract address with your newly deployed contract address as shown below :
-  ![Contract Address](images/contract-address.png)
+  ![Contract Address](https://github.com/user-attachments/assets/06618145-dc63-464d-8acf-57dd267b24ec)
 - Access it at [http://localhost:3000/balanceChecker](http://localhost:3000/balanceChecker).
 - Enter your balance and a threshold balance.
 - The app generates a zk-proof to verify if your balance exceeds the threshold.
@@ -130,22 +130,88 @@ git checkout stylus-zkp
 - **Circuit Logic**: The `PasswordVerifier.circom` circuit takes a private input (the user’s password or combination) and a public input (the expected hash). It computes the hash of the password using a hash function (e.g., MiMC or Poseidon, chosen for ZKP compatibility) within the circuit and checks if it equals the expected hash. The circuit outputs a proof if the hashes match, ensuring the password remains confidential.
 - **On-Chain Verification**: The generated proof is submitted to `PasswordVerifier.sol` on the Stylus dev node. The contract verifies the proof using the Groth16 verification key, confirming that the user’s input matches the expected hash without exposing the password. This enables secure, private authentication on-chain.
 
-![Password Verifier Interface](images/password-verifier.png)
+![Password Verifier Interface](https://github.com/user-attachments/assets/a031b559-46a4-4e70-9619-e535a4c65675)
 *Password verification interface and process flow*
 
 - First, you need to modify the contract deployment:
-  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "AgeVerifier"
+  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "BalanceChecker"
   2. Replace them with "PasswordVerifier"
   3. Re-run the script using `bash run-dev-node.sh`
   4. After the script runs successfully, copy the deployed contract address from the terminal output
   5. Navigate to `packages/nextjs/app/passwordVerifier/page.tsx`
   6. Replace the existing contract address with your newly deployed contract address as shown below : 
-  ![Contract Address](images/contract-address.png)
+  ![Contract Address](https://github.com/user-attachments/assets/b63e4cc9-e322-4651-a511-0611f43b17a4)
 - Access it at [http://localhost:3000/passwordVerifier](http://localhost:3000/passwordVerifier).
 - Example inputs:
   - Combination: `1234`
   - Expected Hash: `4321`
 - The app generates a zk-proof to verify if the provided combination matches the expected hash.
+
+### 4. Location Verifier
+
+- **Purpose**: Prove that a user’s current geographic location (latitude and longitude) lies within a specific state’s bounding box without revealing their exact coordinates. This ensures privacy while allowing verification of location-based eligibility, such as regional access or compliance with jurisdictional requirements.
+- **Circuit Logic**: 
+  - The `LocationVerifier.circom` circuit takes two private inputs (`user_lat`, `user_lon`) representing the user’s scaled latitude and longitude, and four public inputs (`min_lat`, `max_lat`, `min_lon`, `max_lon`) defining the state’s bounding box, also scaled to integers (e.g., multiplied by \(10^7\)).
+  - It uses Circom’s `GreaterEqThan` and `LessEqThan` components from `circomlib` to enforce four constraints:
+    - `user_lat >= min_lat`: Ensures the user’s latitude is at or above the state’s minimum latitude.
+    - `user_lat <= max_lat`: Ensures the user’s latitude is at or below the state’s maximum latitude.
+    - `user_lon >= min_lon`: Ensures the user’s longitude is at or above the state’s minimum longitude.
+    - `user_lon <= max_lon`: Ensures the user’s longitude is at or below the state’s maximum longitude.
+  - Each constraint outputs a 1 (true) if satisfied, and the circuit enforces all must be true using `=== 1`. If any condition fails (e.g., the user’s location is outside the box), proof generation fails, reflecting that the statement "user is in the state" is false.
+- **On-Chain Verification**: 
+  - The user generates a proof locally using the `snarkjs` library’s `groth16.fullProve` function, providing their private location (`user_lat`, `user_lon`) and the public bounding box coordinates.
+  - The proof, along with the public inputs (`min_lat`, `max_lat`, `min_lon`, `max_lon`), is submitted to the `Groth16Verifier.sol` contract deployed on the Arbitrum Stylus dev node. This leverages Stylus’ efficient execution to minimize gas costs.
+
+
+![Location Verifier Interface](https://github.com/user-attachments/assets/bb817dd3-5e88-4a14-a60e-c6063a4c5254)
+*Location verification interface and process flow*
+
+- First, you need to modify the contract deployment:
+  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "PasswordVerifier".
+  2. Replace them with "LocationVerifier".
+  3. Re-run the script using `bash run-dev-node.sh`.
+  4. After the script runs successfully, copy the deployed contract address from the terminal output.
+  5. Navigate to `packages/nextjs/app/locationVerifier/page.tsx`.
+  6. Replace the existing contract address with your newly deployed contract address as shown below: 
+  ![Contract Address](https://github.com/user-attachments/assets/b63e4cc9-e322-4651-a511-0611f43b17a4)
+- Access it at [http://localhost:3000/locationVerifier](http://localhost:3000/locationVerifier).
+- Example inputs:
+- Current Location: `Latitude: 34.0522, Longitude: -118.2437` (e.g., Los Angeles, CA) (You'll need to allow location permission to be able to fetch your current location using GPS.)
+- State Location: `California`
+- The app generates a zk-proof to verify if the user’s current location lies within the specified state’s bounding box without revealing the exact coordinates.
+
+### 5. Model Verifier
+
+- **Purpose**: Prove that a linear regression model’s output (`y`) was correctly computed as `y = w * x + b` for a user-provided input (`x`), using secret model parameters (`w` and `b`), without revealing those parameters. This ensures privacy for proprietary models while allowing users to verify the computation’s integrity, such as in secure ML inference services.
+- **Circuit Logic**: 
+  - The `ModelVerifier.circom` circuit takes two private inputs (`w`, `b`) representing the slope and intercept of the linear regression model, and three public inputs (`x`, `y`, `H`) representing the user’s input, the computed output, and a commitment hash of the model parameters, respectively. All values are integers for simplicity.
+  - It performs two main computations with constraints:
+    - **Output Computation**: Calculates `y_computed = w * x + b` and enforces `y_computed === y`, ensuring the provided output matches the secret model’s prediction for the given input.
+    - **Commitment Verification**: Uses the `Poseidon` hash function from `circomlib` to compute `H_computed = Poseidon(w, b)` and enforces `H_computed === H`, ensuring the secret parameters match the public commitment hash.
+  - If either constraint fails (e.g., `y` doesn’t match the computation or `H` doesn’t correspond to `w` and `b`), proof generation fails, reflecting that the statement "the output was computed correctly with the committed model" is false.
+- **On-Chain Verification**: 
+  - The user (or service, in a real scenario) generates a proof locally using the `snarkjs` library’s `groth16.fullProve` function, providing the private model parameters (`w`, `b`) and the public inputs (`x`, `y`, `H`).
+  - The proof, along with the public inputs (`x`, `y`, `H`), is submitted to the `ModelVerifier.sol` contract deployed on the Arbitrum Stylus dev node. The contract verifies the proof using the Groth16 verification key, returning `true` if the computation is valid and consistent with the committed model, leveraging Stylus’ efficient execution to minimize gas costs.
+
+![Model Verifier Interface](https://github.com/user-attachments/assets/9192372d-bb8e-41a5-a384-5c726e2a6eb9)
+*Model verification interface and process flow*
+
+- First, you need to modify the contract deployment:
+  1. In the `run-dev-node.sh` script, use `Ctrl + F` to find all occurrences of "LocationVerifier".
+  2. Replace them with "ModelVerifier".
+  3. Re-run the script using `bash run-dev-node.sh`.
+  4. After the script runs successfully, copy the deployed contract address from the terminal output.
+  5. Navigate to `packages/nextjs/app/modelVerifier/page.tsx`.
+  6. Replace the existing contract address with your newly deployed contract address as shown below:
+  ![Contract Address](https://github.com/user-attachments/assets/b63e4cc9-e322-4651-a511-0611f43b17a4)
+- Access it at [http://localhost:3000/modelVerifier](http://localhost:3000/modelVerifier).
+- Example inputs:
+- Slope (`w`): `2`
+- Intercept (`b`): `3`
+- Input (`x`): `5`
+- Output (`y`): `13` (computed as `y = 2 * 5 + 3`)
+- Commitment Hash (`H`): `Poseidon(2, 3)` (automatically computed and displayed in the app)
+- The app generates a zk-proof to verify that the output `y` was correctly computed using the secret model parameters committed to by the hash `H`, without revealing `w` or `b` to the verifier.
 
 ## Checkpoint 3: 🛠 Modify and Deploy Contracts
 
