@@ -21,6 +21,7 @@
     "@uniswap/v2-sdk": "^4.6.1",
     "blo": "^1.2.0",
     "burner-connector": "0.0.9",
+    "circomlibjs": "^0.1.7",
     "daisyui": "4.12.10",
     "ethers": "^6.13.4",
     "next": "^14.2.11",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/circomlibjs": "^0",
     "@types/node": "^18.19.50",
     "@types/react": "^18.3.5",
     "@types/snarkjs": "^0",
