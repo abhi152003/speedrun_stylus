@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ICounter } from "./ICounter";
 

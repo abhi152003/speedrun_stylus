@@ -1,8 +1,6 @@
-import { DebugContracts } from "./_components/DebugContracts";
 import type { NextPage } from "next";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 import { DebugAgeVerifier } from "./_components/AgeVerifier";
-
 
 export const metadata = getMetadata({
   title: "Debug Contracts",
@@ -12,7 +10,6 @@ export const metadata = getMetadata({
 const Debug: NextPage = () => {
   return (
     <>
-      {/* <DebugContracts /> */}
       <DebugAgeVerifier />
     </>
   );
