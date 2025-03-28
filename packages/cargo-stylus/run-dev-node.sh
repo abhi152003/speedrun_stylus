@@ -15,7 +15,7 @@ echo "Nitro node is running!"
 
 # Compile the Solidity contract
 echo "Compiling Solidity contract..."
-solcjs --bin --abi --optimize -o build/ contracts/AgeVerifier.sol
+solcjs --bin --abi --optimize -o build/ contracts/LocationVerifier.sol
 
 if [[ $? -ne 0 ]]; then
     echo "Error: Solidity compilation failed"
@@ -23,8 +23,8 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # Extract compiled contract binary
-contract_bin=$(cat build/contracts_AgeVerifier_sol_Groth16Verifier.bin)
-contract_abi=$(cat build/contracts_AgeVerifier_sol_Groth16Verifier.abi)
+contract_bin=$(cat build/contracts_LocationVerifier_sol_Groth16Verifier.bin)
+contract_abi=$(cat build/contracts_LocationVerifier_sol_Groth16Verifier.abi)
 
 if [[ -z "$contract_bin" || -z "$contract_abi" ]]; then
     echo "Error: Compilation output not found"
@@ -49,8 +49,8 @@ if [[ -z "$deployment_tx" ]]; then
     exit 1
 fi
 # Output ABI for future use
-echo "$contract_abi" > build/AgeVerifierABI.json
-echo "ABI saved to build/AgeVerifierABI.json"
+echo "$contract_abi" > build/LocationVerifierABI.json
+echo "ABI saved to build/LocationVerifierABI.json"
 
 # Monitor the Nitro node
 while true; do
