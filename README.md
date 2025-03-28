@@ -31,7 +31,7 @@ Before starting, ensure you have the following installed:
 ```bash
 git clone https://github.com/abhi152003/speedrun_stylus.git
 cd speedrun_stylus
-git checkout stylus-zkp-password-verfier
+git checkout stylus-zkp-password-verifier
 ```
 
 ### Install Dependencies
