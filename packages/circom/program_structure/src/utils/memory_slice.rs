@@ -6,16 +6,12 @@ pub enum TypeInvalidAccess {
     MissingInputTags(String),
     NoInitializedComponent,
     NoInitializedSignal,
-    NoInitializedBus,
 }
 
 pub enum TypeAssignmentError {
-    MultipleAssignmentsComponent,
-    MultipleAssignmentsBus,
     MultipleAssignments,
     AssignmentOutput,
     NoInitializedComponent,
-    DifferentBusInstances,
     AssignmentInput(String),
 }
 
@@ -24,7 +20,6 @@ pub enum MemoryError {
     AssignmentError(TypeAssignmentError),
     InvalidAccess(TypeInvalidAccess),
     UnknownSizeDimension,
-    MismatchedInstances,
     MismatchedDimensions(usize, usize),
     MismatchedDimensionsWeak(usize, usize),
     AssignmentMissingTags(String, String),
@@ -42,15 +37,11 @@ pub type SimpleSlice = MemorySlice<BigInt>;
     The attribute route stores the dimensions of the slice, used to navigate through them.
     The length of values is equal to multiplying all the values in route.
 */
+#[derive(Eq, PartialEq)]
 pub struct MemorySlice<C> {
     route: Vec<SliceCapacity>,
     values: Vec<C>,
-}
-
-impl<C: PartialEq> PartialEq for MemorySlice<C> {
-    fn eq(&self, other: &Self) -> bool{
-        self.route ==  other.route && self.values == other.values
-    }
+    number_inserts: usize,
 }
 
 impl<C: Clone> Clone for MemorySlice<C> {
@@ -58,6 +49,7 @@ impl<C: Clone> Clone for MemorySlice<C> {
         MemorySlice {
             route: self.route.clone(),
             values: self.values.clone(),
+            number_inserts: self.number_inserts,
         }
     }
 }
@@ -142,19 +134,10 @@ impl<C: Clone> MemorySlice<C> {
             }
 
             if new_values.route[i] > memory_slice.route[initial_index_new + i] {
-                if is_strict{
-                    return Result::Err(MemoryError::MismatchedDimensions(
-                        new_values.route[i],
-                        memory_slice.route[initial_index_new + i],
-                    ));
-                }
-                else{
-                    // case variables: we allow the assignment of smaller arrays
-                    return Result::Err(MemoryError::MismatchedDimensionsWeak(
-                        new_values.route[i],
-                        memory_slice.route[initial_index_new + i],
-                    ));
-                }
+                return Result::Err(MemoryError::MismatchedDimensions(
+                    new_values.route[i],
+                    memory_slice.route[initial_index_new + i],
+                ));
             }
             i += 1;
         }
@@ -199,63 +182,7 @@ impl<C: Clone> MemorySlice<C> {
             offset += 1;
         }
 
-        Result::Ok(MemorySlice { route: size, values })
-    }
-
-    fn generate_references_from_access<'a>(
-        memory_slice: &'a MemorySlice<C>,
-        access: &[SliceCapacity],
-    ) -> Result<Vec<&'a C>, MemoryError> {
-        if access.is_empty() {
-            let mut values = Vec::new();
-            for v in &memory_slice.values{
-                values.push(v);
-            }
-            return Ok(values);
-        }
-
-        let (_size, number_of_cells) =
-            MemorySlice::generate_new_route_from_access(memory_slice, access)?;
-        let mut values = Vec::with_capacity(number_of_cells);
-        let initial_cell = MemorySlice::get_initial_cell(memory_slice, access)?;
-        let mut offset = 0;
-        while offset < number_of_cells {
-            let new_value = &memory_slice.values[initial_cell + offset];
-            values.push(new_value);
-            offset += 1;
-        }
-
-        Ok(values)
-    }
-
-    fn generate_mut_references_from_access<'a>(
-        memory_slice: &'a mut MemorySlice<C>,
-        access: &[SliceCapacity],
-    ) -> Result<Vec<&'a mut C>, MemoryError> {
-        // TODO: improve, no traverse complete vector
-
-        if access.is_empty() {
-            let mut values = Vec::new();
-            for v in &mut memory_slice.values{
-                values.push(v);
-            }
-            return Ok(values);
-        }
-
-        let (_size, number_of_cells) =
-            MemorySlice::generate_new_route_from_access(memory_slice, access)?;
-        let mut values = Vec::with_capacity(number_of_cells);
-        let initial_cell = MemorySlice::get_initial_cell(memory_slice, access)?;
-
-        let mut index = 0;
-        for v in &mut memory_slice.values{
-            if index >= initial_cell && index < initial_cell + number_of_cells{
-                values.push(v);
-            }
-            index += 1;
-        }
-
-        Ok(values)
+        Result::Ok(MemorySlice { route: size, values, number_inserts: 0 })
     }
 
     // User operations
@@ -263,7 +190,7 @@ impl<C: Clone> MemorySlice<C> {
         MemorySlice::new_with_route(&[], initial_value)
     }
     pub fn new_array(route: Vec<SliceCapacity>, values: Vec<C>) -> MemorySlice<C> {
-        MemorySlice { route, values }
+        MemorySlice { route, values, number_inserts: 0 }
     }
     pub fn new_with_route(route: &[SliceCapacity], initial_value: &C) -> MemorySlice<C> {
         let mut length = 1;
@@ -276,7 +203,7 @@ impl<C: Clone> MemorySlice<C> {
             values.push(initial_value.clone());
         }
 
-        MemorySlice { route: route.to_vec(), values }
+        MemorySlice { route: route.to_vec(), values, number_inserts: 0 }
     }
     pub fn insert_values(
         memory_slice: &mut MemorySlice<C>,
@@ -288,6 +215,12 @@ impl<C: Clone> MemorySlice<C> {
             Result::Ok(_) => {
                 let mut cell = MemorySlice::get_initial_cell(memory_slice, access)?;
 
+                // if MemorySlice::get_number_of_cells(new_values)
+                //     > (MemorySlice::get_number_of_cells(memory_slice) - cell)
+                // {
+                //     return Result::Err(MemoryError::OutOfBoundsError);
+
+                memory_slice.number_inserts += MemorySlice::get_number_of_cells(new_values);
                 for value in new_values.values.iter() {
                     memory_slice.values[cell] = value.clone();
                     cell += 1;
@@ -296,18 +229,15 @@ impl<C: Clone> MemorySlice<C> {
             }
             Result::Err(MemoryError::MismatchedDimensionsWeak(dim_1, dim_2)) => {
                 let mut cell = MemorySlice::get_initial_cell(memory_slice, access)?;
-                
-                // We assign the min between the number of cells in the new values and the memory slice
-                let number_inserts = std::cmp::min(
-                    MemorySlice::get_number_of_cells(new_values),
-                    MemorySlice::get_number_of_cells(memory_slice)
-                );
-
-                for i in 0..number_inserts{
-                    memory_slice.values[cell] = new_values.values[i].clone();
+                // if MemorySlice::get_number_of_cells(new_values)
+                //     > (MemorySlice::get_number_of_cells(memory_slice) - cell)
+                // {
+                //     return Result::Err(MemoryError::OutOfBoundsError);
+                // }
+                for value in new_values.values.iter() {
+                    memory_slice.values[cell] = value.clone();
                     cell += 1;
                 }
-
                 Result::Err(MemoryError::MismatchedDimensionsWeak(dim_1, dim_2))
             }
             Result::Err(error) => return Err(error),
@@ -322,6 +252,7 @@ impl<C: Clone> MemorySlice<C> {
         if index > MemorySlice::get_number_of_cells(memory_slice) {
             return Result::Err(MemoryError::OutOfBoundsError);
         }
+        memory_slice.number_inserts += 1;
         memory_slice.values[index] = new_value;
         return Result::Ok(());
     }
@@ -351,21 +282,6 @@ impl<C: Clone> MemorySlice<C> {
     ) -> Result<MemorySlice<C>, MemoryError> {
         MemorySlice::generate_slice_from_access(memory_slice, access)
     }
-
-    pub fn access_values_by_reference<'a>(
-        memory_slice: &'a MemorySlice<C>,
-        access: &[SliceCapacity],
-    ) -> Result<Vec<&'a C>, MemoryError> {
-        MemorySlice::generate_references_from_access(memory_slice, access)
-    }
-
-    pub fn access_values_by_mut_reference<'a>(
-        memory_slice: &'a mut MemorySlice<C>,
-        access: &[SliceCapacity],
-    ) -> Result<Vec<&'a mut C>, MemoryError> {
-        MemorySlice::generate_mut_references_from_access(memory_slice, access)
-    }
-
     pub fn access_value_by_index(
         memory_slice: &MemorySlice<C>,
         index: usize,
@@ -416,19 +332,12 @@ impl<C: Clone> MemorySlice<C> {
         let cell = MemorySlice::get_initial_cell(memory_slice, access)?;
         Result::Ok(&mut memory_slice.values[cell])
     }
-    pub fn get_mut_reference_to_single_value_by_index<'a>(
-        memory_slice: &'a mut MemorySlice<C>,
-        index: usize,
-    ) -> Result<&'a mut C, MemoryError> {
-        if index > MemorySlice::get_number_of_cells(memory_slice) {
-            return Result::Err(MemoryError::OutOfBoundsError);
-        }
-        Result::Ok(&mut memory_slice.values[index])
-    }
     pub fn get_number_of_cells(memory_slice: &MemorySlice<C>) -> SliceCapacity {
         memory_slice.values.len()
     }
-
+    pub fn get_number_of_inserts(memory_slice: &MemorySlice<C>) -> SliceCapacity {
+        memory_slice.number_inserts
+    }
     pub fn route(&self) -> &[SliceCapacity] {
         &self.route
     }
@@ -447,11 +356,9 @@ impl<C: Clone> MemorySlice<C> {
         let mut memory_slice = memory_slice;
         memory_slice.values.pop().unwrap()
     }
-
     pub fn destruct(self) -> (Vec<SliceCapacity>, Vec<C>) {
         (self.route, self.values)
     }
-
 }
 
 #[cfg(test)]

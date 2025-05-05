@@ -554,13 +554,13 @@ impl<C: Default + Clone + Display + Hash + Eq> ArithmeticExpression<C> {
     }
 
     // Bit operations
-    pub fn complement(
+    pub fn complement_256(
         elem: &ArithmeticExpression<C>,
         field: &BigInt,
     ) -> ArithmeticExpression<C> {
         use ArithmeticExpression::*;
         if let Number { value } = elem {
-            Number { value: modular_arithmetic::complement(value, field) }
+            Number { value: modular_arithmetic::complement_256(value, field) }
         } else {
             NonQuadratic
         }

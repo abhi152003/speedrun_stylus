@@ -4,7 +4,6 @@ use std::marker::PhantomData;
 
 pub trait VarInfo {}
 pub trait SignalInfo {}
-pub trait BusInfo {}
 pub trait ComponentInfo {}
 
 #[derive(Clone)]
@@ -14,84 +13,67 @@ impl VarInfo for OnlyVars {}
 pub struct OnlySignals;
 impl SignalInfo for OnlySignals {}
 #[derive(Clone)]
-pub struct OnlyBuses;
-impl BusInfo for OnlyBuses {}
-#[derive(Clone)]
 pub struct OnlyComponents;
 impl ComponentInfo for OnlyComponents {}
 #[derive(Clone)]
 pub struct FullEnvironment;
 impl VarInfo for FullEnvironment {}
 impl SignalInfo for FullEnvironment {}
-impl BusInfo for FullEnvironment {}
 impl ComponentInfo for FullEnvironment {}
 
-pub type VarEnvironment<VC> = RawEnvironment<OnlyVars, (), (), VC, ()>;
-pub type SignalEnvironment<SC> = RawEnvironment<OnlySignals, (), SC, (), ()>;
-pub type BusEnvironment<BC> = RawEnvironment<OnlyBuses, (), (), (), BC>;
-pub type ComponentEnvironment<CC> = RawEnvironment<OnlyComponents, CC, (), (), ()>;
-pub type CircomEnvironment<CC, SC, VC, BC> = RawEnvironment<FullEnvironment, CC, SC, VC, BC>;
+pub type VarEnvironment<VC> = RawEnvironment<OnlyVars, (), (), VC>;
+pub type SignalEnvironment<SC> = RawEnvironment<OnlySignals, (), SC, ()>;
+pub type ComponentEnvironment<CC> = RawEnvironment<OnlyComponents, CC, (), ()>;
+pub type CircomEnvironment<CC, SC, VC> = RawEnvironment<FullEnvironment, CC, SC, VC>;
 
 pub enum CircomEnvironmentError {
     NonExistentSymbol,
 }
 
 #[derive(Clone)]
-pub struct RawEnvironment<T, CC, SC, VC, BC> {
-    variables: Vec<VariableBlock<VC>>,
-    signal_inputs: HashMap<String, SC>,
-    signal_outputs: HashMap<String, SC>,
-    signal_intermediates: HashMap<String, SC>,
-    bus_inputs: HashMap<String, BC>,
-    bus_outputs: HashMap<String, BC>,
-    bus_intermediates: HashMap<String, BC>,
+pub struct RawEnvironment<T, CC, SC, VC> {
     components: HashMap<String, CC>,
+    inputs: HashMap<String, SC>,
+    outputs: HashMap<String, SC>,
+    intermediates: HashMap<String, SC>,
+    variables: Vec<VariableBlock<VC>>,
     behaviour: PhantomData<T>,
 }
-impl<T, CC, SC, VC, BC> Default for RawEnvironment<T, CC, SC, VC, BC> {
+impl<T, CC, SC, VC> Default for RawEnvironment<T, CC, SC, VC> {
     fn default() -> Self {
         let variables = vec![VariableBlock::new()];
         RawEnvironment {
-            variables,
-            signal_inputs: HashMap::new(),
-            signal_outputs: HashMap::new(),
-            signal_intermediates: HashMap::new(),
-            bus_inputs: HashMap::new(),
-            bus_outputs: HashMap::new(),
-            bus_intermediates: HashMap::new(),
             components: HashMap::new(),
+            inputs: HashMap::new(),
+            outputs: HashMap::new(),
+            intermediates: HashMap::new(),
+            variables,
             behaviour: PhantomData,
         }
     }
 }
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC>
+impl<T, CC, SC, VC> RawEnvironment<T, CC, SC, VC>
 where
-    T: VarInfo + SignalInfo + BusInfo + ComponentInfo,
+    T: VarInfo + SignalInfo + ComponentInfo,
 {
     pub fn has_symbol(&self, symbol: &str) -> bool {
-        self.has_signal(symbol) || self.has_bus(symbol) || self.has_component(symbol) || self.has_variable(symbol)
+        self.has_signal(symbol) || self.has_component(symbol) || self.has_variable(symbol)
     }
 }
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC> {
+impl<T, CC, SC, VC> RawEnvironment<T, CC, SC, VC> {
     pub fn merge(
-        left: RawEnvironment<T, CC, SC, VC, BC>,
-        right: RawEnvironment<T, CC, SC, VC, BC>,
+        left: RawEnvironment<T, CC, SC, VC>,
+        right: RawEnvironment<T, CC, SC, VC>,
         using: fn(VC, VC) -> VC,
-    ) -> RawEnvironment<T, CC, SC, VC, BC> {
-        let mut signal_inputs = left.signal_inputs;
-        let mut signal_outputs = left.signal_outputs;
-        let mut signal_intermediates = left.signal_intermediates;
-        let mut bus_inputs = left.bus_inputs;
-        let mut bus_outputs = left.bus_outputs;
-        let mut bus_intermediates = left.bus_intermediates;
+    ) -> RawEnvironment<T, CC, SC, VC> {
         let mut components = left.components;
-        signal_inputs.extend(right.signal_inputs);
-        signal_outputs.extend(right.signal_outputs);
-        signal_intermediates.extend(right.signal_intermediates);
-        bus_inputs.extend(right.bus_inputs);
-        bus_outputs.extend(right.bus_outputs);
-        bus_intermediates.extend(right.bus_intermediates);
+        let mut inputs = left.inputs;
+        let mut outputs = left.outputs;
+        let mut intermediates = left.intermediates;
         components.extend(right.components);
+        inputs.extend(right.inputs);
+        outputs.extend(right.outputs);
+        intermediates.extend(right.intermediates);
         let mut variables_left = left.variables;
         let mut variables_right = right.variables;
         let mut variables = Vec::new();
@@ -103,19 +85,16 @@ impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC> {
         }
         variables.reverse();
         RawEnvironment {
-            variables,
-            signal_inputs,
-            signal_outputs,
-            signal_intermediates,
-            bus_inputs,
-            bus_outputs,
-            bus_intermediates,
             components,
+            inputs,
+            intermediates,
+            outputs,
+            variables,
             behaviour: PhantomData,
         }
     }
 }
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC>
+impl<T, CC, SC, VC> RawEnvironment<T, CC, SC, VC>
 where
     T: VarInfo,
 {
@@ -141,7 +120,7 @@ where
         }
         Option::None
     }
-    pub fn new() -> RawEnvironment<T, CC, SC, VC, BC> {
+    pub fn new() -> RawEnvironment<T, CC, SC, VC> {
         RawEnvironment::default()
     }
     pub fn add_variable_block(&mut self) {
@@ -219,7 +198,7 @@ where
     }
 }
 
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC>
+impl<T, CC, SC, VC> RawEnvironment<T, CC, SC, VC>
 where
     T: ComponentInfo,
 {
@@ -260,100 +239,100 @@ where
     }
 }
 
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC>
+impl<T, CC, SC, VC> RawEnvironment<T, CC, SC, VC>
 where
     T: SignalInfo,
 {
     pub fn add_input(&mut self, input_name: &str, content: SC) {
-        self.signal_inputs.insert(input_name.to_string(), content);
+        self.inputs.insert(input_name.to_string(), content);
     }
     pub fn remove_input(&mut self, input_name: &str) {
-        self.signal_inputs.remove(input_name);
+        self.inputs.remove(input_name);
     }
     pub fn add_output(&mut self, output_name: &str, content: SC) {
-        self.signal_outputs.insert(output_name.to_string(), content);
+        self.outputs.insert(output_name.to_string(), content);
     }
     pub fn remove_output(&mut self, output_name: &str) {
-        self.signal_outputs.remove(output_name);
+        self.outputs.remove(output_name);
     }
     pub fn add_intermediate(&mut self, intermediate_name: &str, content: SC) {
-        self.signal_intermediates.insert(intermediate_name.to_string(), content);
+        self.intermediates.insert(intermediate_name.to_string(), content);
     }
     pub fn remove_intermediate(&mut self, intermediate_name: &str) {
-        self.signal_intermediates.remove(intermediate_name);
+        self.intermediates.remove(intermediate_name);
     }
     pub fn has_input(&self, symbol: &str) -> bool {
-        self.signal_inputs.contains_key(symbol)
+        self.inputs.contains_key(symbol)
     }
     pub fn has_output(&self, symbol: &str) -> bool {
-        self.signal_outputs.contains_key(symbol)
+        self.outputs.contains_key(symbol)
     }
     pub fn has_intermediate(&self, symbol: &str) -> bool {
-        self.signal_intermediates.contains_key(symbol)
+        self.intermediates.contains_key(symbol)
     }
     pub fn has_signal(&self, symbol: &str) -> bool {
         self.has_input(symbol) || self.has_output(symbol) || self.has_intermediate(symbol)
     }
     pub fn get_input(&self, symbol: &str) -> Option<&SC> {
-        self.signal_inputs.get(symbol)
+        self.inputs.get(symbol)
     }
     pub fn get_mut_input(&mut self, symbol: &str) -> Option<&mut SC> {
-        self.signal_inputs.get_mut(symbol)
+        self.inputs.get_mut(symbol)
     }
     pub fn get_input_res(&self, symbol: &str) -> Result<&SC, CircomEnvironmentError> {
-        self.signal_inputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.inputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_input_or_break(&self, symbol: &str, file: &str, line: u32) -> &SC {
         assert!(self.has_input(symbol), "Method call in file {} line {}", file, line);
-        self.signal_inputs.get(symbol).unwrap()
+        self.inputs.get(symbol).unwrap()
     }
     pub fn get_mut_input_res(&mut self, symbol: &str) -> Result<&mut SC, CircomEnvironmentError> {
-        self.signal_inputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.inputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_mut_input_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut SC {
         assert!(self.has_input(symbol), "Method call in file {} line {}", file, line);
-        self.signal_inputs.get_mut(symbol).unwrap()
+        self.inputs.get_mut(symbol).unwrap()
     }
 
     pub fn get_output(&self, symbol: &str) -> Option<&SC> {
-        self.signal_outputs.get(symbol)
+        self.outputs.get(symbol)
     }
     pub fn get_mut_output(&mut self, symbol: &str) -> Option<&mut SC> {
-        self.signal_outputs.get_mut(symbol)
+        self.outputs.get_mut(symbol)
     }
     pub fn get_output_res(&self, symbol: &str) -> Result<&SC, CircomEnvironmentError> {
-        self.signal_outputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.outputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_output_or_break(&self, symbol: &str, file: &str, line: u32) -> &SC {
         assert!(self.has_output(symbol), "Method call in file {} line {}", file, line);
-        self.signal_outputs.get(symbol).unwrap()
+        self.outputs.get(symbol).unwrap()
     }
     pub fn get_mut_output_res(&mut self, symbol: &str) -> Result<&mut SC, CircomEnvironmentError> {
-        self.signal_outputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.outputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_mut_output_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut SC {
         assert!(self.has_output(symbol), "Method call in file {} line {}", file, line);
-        self.signal_outputs.get_mut(symbol).unwrap()
+        self.outputs.get_mut(symbol).unwrap()
     }
 
     pub fn get_intermediate(&self, symbol: &str) -> Option<&SC> {
-        self.signal_intermediates.get(symbol)
+        self.intermediates.get(symbol)
     }
     pub fn get_mut_intermediate(&mut self, symbol: &str) -> Option<&mut SC> {
-        self.signal_intermediates.get_mut(symbol)
+        self.intermediates.get_mut(symbol)
     }
     pub fn get_intermediate_res(&self, symbol: &str) -> Result<&SC, CircomEnvironmentError> {
-        self.signal_intermediates.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.intermediates.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_intermediate_or_break(&self, symbol: &str, file: &str, line: u32) -> &SC {
         assert!(self.has_intermediate(symbol), "Method call in file {} line {}", file, line);
-        self.signal_intermediates.get(symbol).unwrap()
+        self.intermediates.get(symbol).unwrap()
     }
     pub fn get_mut_intermediate_res(
         &mut self,
         symbol: &str,
     ) -> Result<&mut SC, CircomEnvironmentError> {
-        self.signal_intermediates.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
+        self.intermediates.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
     }
     pub fn get_mut_intermediate_or_break(
         &mut self,
@@ -362,7 +341,7 @@ where
         line: u32,
     ) -> &mut SC {
         assert!(self.has_intermediate(symbol), "Method call in file {} line {}", file, line);
-        self.signal_intermediates.get_mut(symbol).unwrap()
+        self.intermediates.get_mut(symbol).unwrap()
     }
 
     pub fn get_signal(&self, symbol: &str) -> Option<&SC> {
@@ -420,173 +399,6 @@ where
     pub fn get_mut_signal_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut SC {
         assert!(self.has_signal(symbol), "Method call in file {} line {}", file, line);
         if let Result::Ok(v) = self.get_mut_signal_res(symbol) {
-            v
-        } else {
-            unreachable!();
-        }
-    }
-}
-
-impl<T, CC, SC, VC, BC> RawEnvironment<T, CC, SC, VC, BC>
-where
-    T: BusInfo,
-{
-    pub fn add_input_bus(&mut self, input_name: &str, content: BC) {
-        self.bus_inputs.insert(input_name.to_string(), content);
-    }
-    pub fn remove_input_bus(&mut self, input_name: &str) {
-        self.bus_inputs.remove(input_name);
-    }
-    pub fn add_output_bus(&mut self, output_name: &str, content: BC) {
-        self.bus_outputs.insert(output_name.to_string(), content);
-    }
-    pub fn remove_output_bus(&mut self, output_name: &str) {
-        self.bus_outputs.remove(output_name);
-    }
-    pub fn add_intermediate_bus(&mut self, intermediate_name: &str, content: BC) {
-        self.bus_intermediates.insert(intermediate_name.to_string(), content);
-    }
-    pub fn remove_intermediate_bus(&mut self, intermediate_name: &str) {
-        self.bus_intermediates.remove(intermediate_name);
-    }
-    pub fn has_input_bus(&self, symbol: &str) -> bool {
-        self.bus_inputs.contains_key(symbol)
-    }
-    pub fn has_output_bus(&self, symbol: &str) -> bool {
-        self.bus_outputs.contains_key(symbol)
-    }
-    pub fn has_intermediate_bus(&self, symbol: &str) -> bool {
-        self.bus_intermediates.contains_key(symbol)
-    }
-    pub fn has_bus(&self, symbol: &str) -> bool {
-        self.has_input_bus(symbol) || self.has_output_bus(symbol) || self.has_intermediate_bus(symbol)
-    }
-    pub fn get_input_bus(&self, symbol: &str) -> Option<&BC> {
-        self.bus_inputs.get(symbol)
-    }
-    pub fn get_mut_input_bus(&mut self, symbol: &str) -> Option<&mut BC> {
-        self.bus_inputs.get_mut(symbol)
-    }
-    pub fn get_input_bus_res(&self, symbol: &str) -> Result<&BC, CircomEnvironmentError> {
-        self.bus_inputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_input_bus_or_break(&self, symbol: &str, file: &str, line: u32) -> &BC {
-        assert!(self.has_input_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_inputs.get(symbol).unwrap()
-    }
-    pub fn get_mut_input_bus_res(&mut self, symbol: &str) -> Result<&mut BC, CircomEnvironmentError> {
-        self.bus_inputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_mut_input_bus_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut BC {
-        assert!(self.has_input_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_inputs.get_mut(symbol).unwrap()
-    }
-
-    pub fn get_output_bus(&self, symbol: &str) -> Option<&BC> {
-        self.bus_outputs.get(symbol)
-    }
-    pub fn get_mut_output_bus(&mut self, symbol: &str) -> Option<&mut BC> {
-        self.bus_outputs.get_mut(symbol)
-    }
-    pub fn get_output_bus_res(&self, symbol: &str) -> Result<&BC, CircomEnvironmentError> {
-        self.bus_outputs.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_output_bus_or_break(&self, symbol: &str, file: &str, line: u32) -> &BC {
-        assert!(self.has_output_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_outputs.get(symbol).unwrap()
-    }
-    pub fn get_mut_output_bus_res(&mut self, symbol: &str) -> Result<&mut BC, CircomEnvironmentError> {
-        self.bus_outputs.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_mut_output_bus_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut BC {
-        assert!(self.has_output_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_outputs.get_mut(symbol).unwrap()
-    }
-
-    pub fn get_intermediate_bus(&self, symbol: &str) -> Option<&BC> {
-        self.bus_intermediates.get(symbol)
-    }
-    pub fn get_mut_intermediate_bus(&mut self, symbol: &str) -> Option<&mut BC> {
-        self.bus_intermediates.get_mut(symbol)
-    }
-    pub fn get_intermediate_bus_res(&self, symbol: &str) -> Result<&BC, CircomEnvironmentError> {
-        self.bus_intermediates.get(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_intermediate_bus_or_break(&self, symbol: &str, file: &str, line: u32) -> &BC {
-        assert!(self.has_intermediate_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_intermediates.get(symbol).unwrap()
-    }
-    pub fn get_mut_intermediate_bus_res(
-        &mut self,
-        symbol: &str,
-    ) -> Result<&mut BC, CircomEnvironmentError> {
-        self.bus_intermediates.get_mut(symbol).ok_or_else(|| CircomEnvironmentError::NonExistentSymbol)
-    }
-    pub fn get_mut_intermediate_bus_or_break(
-        &mut self,
-        symbol: &str,
-        file: &str,
-        line: u32,
-    ) -> &mut BC {
-        assert!(self.has_intermediate_bus(symbol), "Method call in file {} line {}", file, line);
-        self.bus_intermediates.get_mut(symbol).unwrap()
-    }
-
-    pub fn get_bus(&self, symbol: &str) -> Option<&BC> {
-        if self.has_input_bus(symbol) {
-            self.get_input_bus(symbol)
-        } else if self.has_output_bus(symbol) {
-            self.get_output_bus(symbol)
-        } else if self.has_intermediate_bus(symbol) {
-            self.get_intermediate_bus(symbol)
-        } else {
-            Option::None
-        }
-    }
-    pub fn get_mut_bus(&mut self, symbol: &str) -> Option<&mut BC> {
-        if self.has_input_bus(symbol) {
-            self.get_mut_input_bus(symbol)
-        } else if self.has_output_bus(symbol) {
-            self.get_mut_output_bus(symbol)
-        } else if self.has_intermediate_bus(symbol) {
-            self.get_mut_intermediate_bus(symbol)
-        } else {
-            Option::None
-        }
-    }
-    pub fn get_bus_res(&self, symbol: &str) -> Result<&BC, CircomEnvironmentError> {
-        if self.has_input_bus(symbol) {
-            self.get_input_bus_res(symbol)
-        } else if self.has_output_bus(symbol) {
-            self.get_output_bus_res(symbol)
-        } else if self.has_intermediate_bus(symbol) {
-            self.get_intermediate_bus_res(symbol)
-        } else {
-            Result::Err(CircomEnvironmentError::NonExistentSymbol)
-        }
-    }
-    pub fn get_bus_or_break(&self, symbol: &str, file: &str, line: u32) -> &BC {
-        assert!(self.has_bus(symbol), "Method call in file {} line {}", file, line);
-        if let Result::Ok(v) = self.get_bus_res(symbol) {
-            v
-        } else {
-            unreachable!();
-        }
-    }
-    pub fn get_mut_bus_res(&mut self, symbol: &str) -> Result<&mut BC, CircomEnvironmentError> {
-        if self.has_input_bus(symbol) {
-            self.get_mut_input_bus_res(symbol)
-        } else if self.has_output_bus(symbol) {
-            self.get_mut_output_bus_res(symbol)
-        } else if self.has_intermediate_bus(symbol) {
-            self.get_mut_intermediate_bus_res(symbol)
-        } else {
-            Result::Err(CircomEnvironmentError::NonExistentSymbol)
-        }
-    }
-    pub fn get_mut_bus_or_break(&mut self, symbol: &str, file: &str, line: u32) -> &mut BC {
-        assert!(self.has_bus(symbol), "Method call in file {} line {}", file, line);
-        if let Result::Ok(v) = self.get_mut_bus_res(symbol) {
             v
         } else {
             unreachable!();

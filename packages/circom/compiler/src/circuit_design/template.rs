@@ -47,7 +47,7 @@ impl WriteWasm for TemplateCodeInfo {
         instructions.push(set_constant(&producer.get_component_free_pos().to_string()));
         instructions.push(load32(None));
         instructions.push(set_local(producer.get_offset_tag()));
-        // set template id
+        // set component id
         instructions.push(get_local(producer.get_offset_tag()));
         instructions.push(set_constant(&self.id.to_string()));
         instructions.push(store32(None));
@@ -99,7 +99,6 @@ impl WriteWasm for TemplateCodeInfo {
         instructions.push(format!(" (local {} i32)", producer.get_create_loop_offset_tag()));
         instructions.push(format!(" (local {} i32)", producer.get_create_loop_counter_tag()));
         instructions.push(format!(" (local {} i32)", producer.get_merror_tag()));
-        instructions.push(format!(" (local {} i32)", producer.get_result_size_tag())); // used when calling functions assigned to inputs of subcomponents
         let local_info_size_u32 = producer.get_local_info_size_u32(); // in the future we can add some info like pointer to run father or text father
                                                                       //set lvar (start of auxiliar memory for vars)
         instructions.push(set_constant("0"));
@@ -290,9 +289,6 @@ impl TemplateCodeInfo {
         run_body.push(format!("{};", declare_lvar(self.var_stack_depth)));
         run_body.push(format!("{};", declare_sub_component_aux()));
         run_body.push(format!("{};", declare_index_multiple_eq()));
-        run_body.push(format!("int cmp_index_ref_load = -1;"));
-
-
         
         for t in &self.body {
             let (mut instructions_body, _) = t.produce_c(producer, Some(parallel));

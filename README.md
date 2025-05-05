@@ -1,21 +1,19 @@
-# 🚩 Challenge #5 : ZKP - Age Verifier
+# 🚩 Challenge #5 : ZKP - Aadhaar Verifier
 
-🎫 Build an Age Verifier using Zero-Knowledge Proofs (ZKP) on Arbitrum Stylus:
+🎫 Build Privacy-Preserving Verifiers using Zero-Knowledge Proofs (ZKP) on Arbitrum Stylus:
 
-👷‍♀️ In this challenge, you'll build and deploy a smart contract that utilizes Zero-Knowledge Proofs for private age verification. You'll work with ZKP circuits, deploy them to an Arbitrum Stylus dev node, and create a frontend that allows users to generate and verify proofs! 🚀
+👷‍♀️ In this challenge, you'll explore a frontend that uses the Anon Aadhaar SDK to verify identity without revealing sensitive information. For advanced users, you can optionally deploy smart contracts to an Arbitrum Stylus dev node for custom verification logic. 🚀
 
-🌟 The final deliverable is a full-stack application featuring age verification. Deploy your contract to a testnet, then build and upload your app to a public web server.
+🌟 The final deliverable is a privacy-preserving Aadhaar identity verification application that uses zero-knowledge proofs.
 
 ### How ZKP Integration Works
-This project leverages Zero-Knowledge Proofs (ZKPs) to enable private verification of age on Arbitrum Stylus. Here's the workflow:
+This project leverages Zero-Knowledge Proofs (ZKPs) to enable private verification of Aadhaar identity:
 
-1. **Circuit Design**: The ZKP logic is defined in `.circom` files (e.g., `AgeVerifier.circom`) using the Circom language. These circuits encode the rules for verification (e.g., "is age ≥ 18?") without revealing the inputs.
-2. **Proof System Setup**: We use the `snarkjs` library with the Groth16 proving system to generate proving and verification keys. The trusted setup is simulated using a pre-existing `pot12_final.ptau` file.
-3. **Contract Generation**: The verification key is exported to a Solidity contract (e.g., `AgeVerifier.sol`) that runs on Arbitrum Stylus, allowing on-chain verification of zk-proofs.
-4. **Frontend Interaction**: The Next.js frontend uses WebAssembly (`.wasm`) outputs from Circom to generate proofs locally, which are then submitted to the deployed contract for verification.
-5. **Arbitrum Stylus Advantage**: Stylus' Rust-based environment enables efficient execution of the verifier contract, reducing gas costs compared to traditional EVM-based ZKP verification.
+1. **Anon Aadhaar SDK**: We integrate [Anon Aadhaar](https://github.com/anon-aadhaar/anon-aadhaar), a privacy-preserving protocol for proving Aadhaar identity through zero-knowledge proofs.
+2. **Frontend Integration**: The Next.js frontend uses the Anon Aadhaar SDK for QR code verification and selective disclosure of identity information.
+3. **Advanced (Optional)**: For those wanting to modify the underlying circuits, verification keys can be exported to Solidity contracts that run on Arbitrum Stylus, allowing on-chain verification of zk-proofs.
 
-This integration ensures privacy (inputs remain off-chain) and scalability (proof verification is lightweight on-chain).
+This integration ensures privacy (inputs remain off-chain) while providing cryptographic proof of identity.
 
 ## Checkpoint 0: 📦 Environment Setup 📚
 
@@ -24,14 +22,14 @@ Before starting, ensure you have the following installed:
 - [Node.js (>= v18.17)](https://nodejs.org/en/download/)
 - [Yarn](https://classic.yarnpkg.com/en/docs/install/)
 - [Git](https://git-scm.com/downloads)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) (optional - only needed for advanced customization)
 
 ### Clone the Repository
 
 ```bash
 git clone https://github.com/abhi152003/speedrun_stylus.git
 cd speedrun_stylus
-git checkout stylus-zkp-age-verifier
+git checkout stylus-zkp-anon-aadhaar
 ```
 
 ### Install Dependencies
@@ -43,6 +41,39 @@ yarn install
 ```
 
 ## Checkpoint 1: 🚀 Start Your Dev Environment
+
+### Start the Frontend Application
+
+Navigate to the `nextjs` folder and start the development server:
+
+```bash
+cd packages/nextjs
+yarn dev
+```
+
+> The app will be available at [http://localhost:3000](http://localhost:3000).
+
+> **Note:** The app works out-of-the-box with the Anon Aadhaar SDK. You don't need to run a local Stylus node unless you want to modify the underlying ZK circuits and verifier contracts.
+
+## Checkpoint 2: 💫 Explore the Features
+
+### Anon Aadhaar Verifier
+
+- **Purpose**: Verify identity information from an Aadhaar QR code without revealing all personal data.
+- **Implementation**: Uses the [Anon Aadhaar SDK](https://github.com/anon-aadhaar/anon-aadhaar) to verify Aadhaar QR codes and generate zero-knowledge proofs.
+- **Privacy-Preserving**: Users choose which fields to reveal (age, gender, pincode, state) while keeping other information private.
+
+Key features:
+- Toggle between test mode and production mode for different QR code validation
+- Select specific fields to reveal while keeping others private
+- View detailed proof information, including the Groth16 ZK proof components
+
+![anon-aadhaar](https://github.com/user-attachments/assets/50844564-e0f3-4b3f-8054-4d7b595ec51b)
+Visit [http://localhost:3000/anon-aadhaar](http://localhost:3000/anon-aadhaar) to try the Anon Aadhaar Verifier.
+
+## Advanced (Optional): 🛠 Deploying to a Local Arbitrum Stylus Node
+
+If you want to dive deeper into ZKP circuits or deploy custom verification contracts, follow these steps:
 
 ### Step 1: Start the Nitro Dev Node
 
@@ -58,60 +89,16 @@ yarn install
    ```
    This script:
    - Spins up an Arbitrum Stylus Nitro dev node in Docker.
-   - Deploys the `AgeVerifier.sol` contract.
-   - Generates the ABI for interacting with the contract.
+   - Deploys the verifier contracts.
+   - Generates the ABI for interacting with the contracts.
 
 > The dev node will be accessible at `http://localhost:8547`.
 
-### Step 2: Start the Frontend
+### Step 2: Modify and Deploy Custom Contracts
 
-1. Open a new terminal window to keep the dev node running.
-2. Navigate to the `nextjs` folder:
-   ```bash
-   cd packages/nextjs
-   ```
+For the Anon Aadhaar verification, refer to the [Anon Aadhaar documentation](https://documentation.anon-aadhaar.pse.dev/docs/intro) for customizing its behavior.
 
-3. Start the development server:
-   ```bash
-   yarn dev
-   ```
-
-> The app will be available at [http://localhost:3000/ageVerifier](http://localhost:3000/ageVerifier).
-
-## Checkpoint 2: 💫 Explore the Features
-
-### Age Verifier
-
-- **Purpose**: Prove that a user's age meets a threshold (e.g., ≥ 18) without disclosing their birthdate.
-- **Circuit Logic**: The `AgeVerifier.circom` circuit takes a private input (birthdate) and a public input (threshold year). It computes the age and outputs a proof if the condition is met.
-- **On-Chain Verification**: The generated proof is submitted to `AgeVerifier.sol` on the Stylus dev node, which uses the verification key to confirm validity.
-
-![Age Verifier Interface](https://github.com/user-attachments/assets/36c8961b-a3c2-4dee-ab53-929ddb8a265b)
-*Age verification interface and process flow*
-
-- Navigate to the "Debug Contracts" tab in the frontend.
-- This feature interacts with the **Age Verifier** contract, which was generated from the `AgeVerifier.circom` circuit located in `packages/circuits`.
-- Circuit generation commands:
-  ```bash
-  circom AgeVerifier.circom --r1cs --wasm --sym
-  npx snarkjs groth16 setup AgeVerifier.r1cs pot12_final.ptau AgeVerifier_0000.zkey
-  npx snarkjs zkey contribute AgeVerifier_0000.zkey AgeVerifier_final.zkey --name="Contributor" -v
-  npx snarkjs zkey export verificationkey AgeVerifier_final.zkey verification_key.json
-  npx snarkjs zkey export solidityverifier AgeVerifier_final.zkey AgeVerifier.sol
-  ```
-- Choose a birthdate in the frontend to generate a zk-proof, which will be verified on-chain using the deployed `AgeVerifier.sol` contract.
-
-## Checkpoint 3: 🛠 Modify and Deploy Contracts
-
-You can tinker with circuit logic by modifying files in the `packages/circuits` folder. After making changes, regenerate contracts using these commands:
-
-```bash
-circom AgeVerifier.circom --r1cs --wasm --sym
-npx snarkjs groth16 setup AgeVerifier.r1cs pot12_final.ptau AgeVerifier_0000.zkey
-npx snarkjs zkey contribute AgeVerifier_0000.zkey AgeVerifier_final.zkey --name="Contributor" -v
-npx snarkjs zkey export verificationkey AgeVerifier_final.zkey verification_key.json
-npx snarkjs zkey export solidityverifier AgeVerifier_final.zkey AgeVerifier.sol
-```
+To see how the ZK circuits work under the hood, explore the circuits in the Anon Aadhaar repository's [circuit folder](https://github.com/anon-aadhaar/anon-aadhaar/tree/main/packages/circuits).
 
 Deploy new contracts by placing them in `packages/cargo-stylus/contracts` and running:
 
@@ -136,7 +123,7 @@ Run the script again:
 bash run-dev-node.sh
 ```
 
-## Checkpoint 4: 🚢 Ship your frontend! 🚁
+## Checkpoint 3: 🚢 Ship your frontend! 🚁
 
 To deploy your app to Vercel:
 
@@ -151,16 +138,15 @@ For production deployment:
 yarn vercel --prod
 ```
 
-## Checkpoint 5: 📜 Contract Verification
+## 🏆 Credits and Acknowledgements
 
-You can verify your deployed smart contract using:
+This project uses the following open-source technology:
 
-```bash
-cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
-```
-
-Replace `$deployment_tx` with your deployment transaction hash.
+- [Anon Aadhaar](https://github.com/anon-aadhaar/anon-aadhaar) - A zero-knowledge protocol that allows Aadhaar ID owners to prove their identity in a privacy-preserving way, developed by [Privacy & Scaling Explorations](https://pse.dev/).
 
 ## 🏁 Next Steps
 
-Explore more challenges or contribute to this project!
+- Explore other zk-proof applications for privacy-preserving verification
+- Add more identity verification options
+- Implement on-chain credential issuance based on successful verifications
+- Integrate with decentralized identity frameworks

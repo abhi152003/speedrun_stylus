@@ -55,7 +55,10 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
+    "@anon-aadhaar/react": "^2.4.3",
+    "@zk-email/circuits": "^6.3.3-nightly-20250214",
     "circomlib": "^2.0.5",
+    "jsqr": "^1.4.0",
     "solc": "^0.8.28"
   }
 }
