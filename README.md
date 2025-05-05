@@ -1,4 +1,4 @@
-# 🚩 Challenge #5 : ZKP - Aadhaar Verifier
+# 🚩 Challenge #10 : ZKP - Aadhaar Verifier
 
 🎫 Build Privacy-Preserving Verifiers using Zero-Knowledge Proofs (ZKP) on Arbitrum Stylus:
 
