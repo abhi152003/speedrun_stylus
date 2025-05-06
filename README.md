@@ -68,7 +68,7 @@ Key features:
 - Select specific fields to reveal while keeping others private
 - View detailed proof information, including the Groth16 ZK proof components
 
-![anon-aadhaar](https://github-production-user-asset-6210df.s3.amazonaws.com/83402382/440324943-50844564-e0f3-4b3f-8054-4d7b595ec51b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250505%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250505T115520Z&X-Amz-Expires=300&X-Amz-Signature=a30c6f8f2c142d0ddabdf722d9ff30a08158d4024bf907415f75df46a931d788&X-Amz-SignedHeaders=host)
+![Image](https://github.com/user-attachments/assets/08ffa63a-14c8-42b9-853d-fe5fd43dd92f)
 Visit [http://localhost:3000/anon-aadhaar](http://localhost:3000/anon-aadhaar) to try the Anon Aadhaar Verifier.
 
 ## Advanced (Optional): 🛠 Deploying to a Local Arbitrum Stylus Node
