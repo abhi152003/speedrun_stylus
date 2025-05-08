@@ -1,5 +1,7 @@
 # 🚩 Challenge #10 : ZKP - Aadhaar Verifier
 
+> ⚠️ **Important:** Please complete **Challenge #9** first if you haven't already, as it contains essential instructions related to all upcoming challenges.
+
 🎫 Build Privacy-Preserving Verifiers using Zero-Knowledge Proofs (ZKP) on Arbitrum Stylus:
 
 👷‍♀️ In this challenge, you'll explore a frontend that uses the Anon Aadhaar SDK to verify identity without revealing sensitive information. For advanced users, you can optionally deploy smart contracts to an Arbitrum Stylus dev node for custom verification logic. 🚀
@@ -27,9 +29,8 @@ Before starting, ensure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/abhi152003/speedrun_stylus.git
+git clone -b stylus-zkp-anon-aadhaar https://github.com/abhi152003/speedrun_stylus.git
 cd speedrun_stylus
-git checkout stylus-zkp-anon-aadhaar
 ```
 
 ### Install Dependencies
@@ -150,3 +151,9 @@ This project uses the following open-source technology:
 - Add more identity verification options
 - Implement on-chain credential issuance based on successful verifications
 - Integrate with decentralized identity frameworks
+
+## 🎉🎉 Congratulations! 🎉🎉
+
+You've successfully completed all the challenges! Your dedication and hard work have paid off. Keep exploring and learning more about the exciting world of blockchain technology. 
+
+Good luck on your journey ahead! 🚀
