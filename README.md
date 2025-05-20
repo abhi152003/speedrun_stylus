@@ -169,4 +169,4 @@ Replace `$deployment_tx` with your deployment transaction hash.
 
 Explore more challenges or contribute to this project!
 
-> 🏃 Head to your next challenge [here](https://speedrun-stylus.vercel.app/challenge/zkp-location).
+> 🏃 Head to your next challenge [here](https://speedrunstylus.com/challenge/zkp-location).
