@@ -1,24 +1,73 @@
-# dependencies
-node_modules
+# Environment variable files
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+# NPM auth tokens
+.npmrc
 
-# eslint
-.eslintcache
+# Private key material
+*.pem
+*.key
+*.csr
+*.crt
+*.p12
+*.jks
 
-# misc
-.DS_Store
+# SSH keys
+id_rsa
+id_rsa.pub
+id_dsa
+id_dsa.pub
+id_ecdsa
+id_ecdsa.pub
+id_ed25519
+id_ed25519.pub
+ssh_config
 
-# IDE
-.vscode
-.idea
+# AWS credentials
+.aws/credentials
+.aws/config
 
-# cli
-dist
-.vercel
+# GPG keys and signature files
+*.gpg
+*.asc
+
+# Kubernetes config
+.kube/config
+*.kube/config
+
+# Google Cloud service account keys
+*.json                    # e.g. service-account.json
+
+# Azure publish settings
+*.publishsettings
+
+# Heroku API key
+.heroku
+
+# Terraform sensitive files
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Vault and Ansible secrets
+vault-*.yml
+group_vars/*  # if you store sensitive data here
+host_vars/*
+
+# CI/CD sensitive env files
+.travis.env
+.circleci/*.env
+github/workflows/*.env
+
+# Editor/project settings that may contain creds
+.vscode/settings.json
+.idea/**/workspace.xml
