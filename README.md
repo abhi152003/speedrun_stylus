@@ -1,120 +1,64 @@
-# 🚩 Challenge #0: 🎟 Simple Counter Example
+# 🚩 Challenge #11 : Setup of Vibekit Agents
 
-🎫 Create a simple Counter:
+🎫 Get started with Vibekit DeFi Agents:
 
-👷‍♀️ You'll compile and deploy your first smart contracts. Then, you'll use a template React app full of important components and hooks. Finally, you'll deploy a Counter contract written in RUST to a public network to share with friends! 🚀
+👷‍♀️ You'll set up and interact with autonomous DeFi agents using the Vibekit framework. Then, you'll use a modern React frontend to interact with various agents including lending, liquidity, and swapping agents. Finally, you'll deploy and run agents in a Docker environment to experience the full power of DeFi automation! 🚀
 
-🌟 The final deliverable is an app that lets users interact with the counter contract. Deploy your contracts to a testnet, then build and upload your app to a public web server.
+🌟 The final deliverable is a fully functional Vibekit setup that lets users interact with multiple DeFi agents through a beautiful web interface.
+
+## 📙 Introduction
+
+Vibekit is the polyglot toolkit for vibe coding smart, autonomous DeFi agents that vibe with the blockchain. Whether you're automating trades, managing liquidity, or integrating with on-chain and off-chain data, Vibekit makes it effortless and fun.
+
+At its core, Vibekit uses the Model Context Protocol (MCP) to standardize how agents connect with tools and data. It includes built-in Agent2Agent (A2A) integration, so the agents can easily work together. Vibekit also works smoothly with popular frameworks like Eliza and LangGraph, just add our MCP tools to your existing agents and watch them level up with DeFi superpowers!
+
+## 🧬 Repository Organization
+
+Vibekit is structured as a monorepo with TypeScript at its core, with a Rust implementation is on the horizon. Here's how it's organized:
+
+- `clients/`: Clients for front-end interaction with agents.
+
+- `templates/`: Vibekit framework agents to use as a starting template to build your own agent.
+
+- `examples/`: Agent examples that demonstrate the use of Ember AI's MCP tools.
+
+- `lib/`: Core libraries and tools.
+
+- `mcp-tools/`: Implementations of MCP tools.
+
+### 📙 For more informations you can visit the below link:
+
+- [Vibekit Documentation](https://github.com/EmberAGI/arbitrum-vibekit)
 
 ## Checkpoint 0: 📦 Prerequisites 📚
 
 Before starting, ensure you have the following installed:
 
 - [Node.js (>= v18.17)](https://nodejs.org/en/download/)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
-- [Git](https://git-scm.com/downloads)
+- [pnpm](https://pnpm.io/installation)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [WSL (for Windows users)](https://www.geeksforgeeks.org/how-to-install-wsl2-windows-subsystem-for-linux-2-on-windows-10/)
-- [Docker](https://docs.docker.com/get-docker/)
-- [Curl](https://gcore.com/learning/how-to-install-curl-on-ubuntu)
-- [Rust](https://rustup.rs/) (including `rustc`, `rustup`, and `cargo`) - Install with (⚠️ **Must use WSL terminal to run these commands**):
 
-  ```bash
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  ```
+### 🔧 Version Checking
 
-  ```bash
-  source ~/.bashrc  # or restart your terminal
-  ```
-
-- cargo-stylus  
-  -> Install cargo-stylus with the below command:
-
-  ```bash
-  cargo install cargo-stylus
-  ```
-
-    > ⚠️ **Note for Ubuntu users**: If you face issues related to pkg-config while trying to install cargo-stylus, run these commands:
-  ```bash
-  sudo apt update
-  sudo apt install pkg-config
-  sudo apt install libssl-dev
-  sudo apt install build-essential
-  ```
-
-
-- [Foundry](https://getfoundry.sh/introduction/installation/) - Required for smart contract development
-
-### Foundry Installation Steps:
-
-#### 1. Open your WSL terminal.
-
-#### 2. Install Foundry using the official install script:
-```bash
-curl -L https://foundry.paradigm.xyz | bash
-```
-
-#### 3. Add Foundry to your shell profile
-
-After installation, you'll see instructions to add Foundry to your shell profile (like .bashrc or .zshrc). Usually, you can do:
+Ensure your tools versions after successful installations:
 
 ```bash
-export PATH="$HOME/.foundry/bin:$PATH"
+# Check your versions
+pnpm --version
+docker --version
+docker compose version
 ```
 
-Add the above line to your ~/.bashrc or ~/.zshrc file, then reload your shell:
+> 💡 If your are on an M-series Mac, you need to install Docker using the [dmg package](https://docs.docker.com/desktop/setup/install/mac-install/) supplied officially by Docker rather than through Homebrew or other means to avoid build issues.
 
-```bash
-source ~/.bashrc
-```
+## ⚡ Developer Quickstart
 
-```bash
-source ~/.zshrc
-```
+> ⚠️ **IMPORTANT**: Vibekit currently only supports Arbitrum and Ethereum mainnet configurations. Testnet support is not available as of now.
 
-#### 4. Install Foundry binaries
+Follow these steps to build and run an agent:
 
-```bash
-foundryup
-```
-
----
-
-### 🔧 Version Requirements
-
-Ensure your tools are ready to use:
-
-#### Check your versions - ⚠️ **Must use WSL terminal to run these commands**
-
-```bash
-cargo stylus --version
-```
-
-```bash
-cargo --version
-```
-
-```bash
-rustup --version
-```
-
-```bash
-rustc --version
-```
-
-```bash
-curl --version
-```
-
-```bash
-cast --version
-```
-
-```bash
-forge --version
-```
-
-
-### 🚩 Challenge Setup Instructions
+### 🚩 Setup Instructions
 
 #### For Ubuntu/Mac Users:
 
@@ -122,38 +66,131 @@ forge --version
 2. Clone the repository:
 
    ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git speedrun_stylus_counter
+   git clone https://github.com/EmberAGI/arbitrum-vibekit.git
+   cd arbitrum-vibekit
    ```
+
+3. Navigate to the TypeScript directory and install dependencies:
 
    ```bash
-   cd speedrun_stylus_counter
+   cd typescript
+   pnpm install
    ```
+
+   > 💡 **Important**: After cloning the repository, you must run `pnpm install` in the typescript directory to install all project dependencies before proceeding.
+
+4. Configure environment variables:
 
    ```bash
-   yarn install
+   cp .env.example .env
    ```
 
-3. Start the local devnode in Docker:
+5. 🔑 **Configure your environment variables:**
+
+   Edit the `.env` file and populate it with your API keys:
+
+   **Step 1:** 🔓 Uncomment this variable:
 
    ```bash
-   cd packages/stylus-demo
+   MCP_TOOL_TIMEOUT_MS=90000
    ```
+
+   **Step 2:** 🌐 Get your OpenRouter API key:
+
+   - Visit [🔗 OpenRouter API Keys](https://openrouter.ai/settings/keys)
+   - Click "Create Key"
+   - ⚠️ **Important**: Set "Credit limit (optional)" to **$0**
+   - 📋 Copy the generated key and paste it in your `.env` file
+
+   **Step 3:** 🔗 Get your QuickNode API credentials (Required for on-chain transactions):
+
+   > ⚠️ **Important**: Any on-chain transactions like swapping, buying tokens, providing liquidity, or lending to AAVE require valid QuickNode credentials. Without them, you'll receive a **401 Unauthorized error**.
+
+   - Visit [🔗 QuickNode Dashboard](https://dashboard.quicknode.com/endpoints)
+   - Complete authentication first
+   - Create an Arbitrum Mainnet endpoint to do any transaction on Arbitrum
+   - Your endpoint URL will look like: `https://rough-lively-example.arbitrum-mainnet.quiknode.pro/3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b/`
+
+   **Configure in your `.env` file:**
 
    ```bash
-   bash run-dev-node.sh
+   QUICKNODE_SUBDOMAIN=rough-lively-example
+   QUICKNODE_API_KEY=3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b
    ```
 
-4. In a second terminal window, start your frontend:
+   > 💡 **Breakdown**: In the URL above, `rough-lively-example` is your **QUICKNODE_SUBDOMAIN** and `3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b` is your **QUICKNODE_API_KEY** (everything after `arbitrum-mainnet.quiknode.pro/`).
+
+6. Start the services with Docker Compose:
 
    ```bash
-   cd speedrun_stylus_counter/packages/nextjs
+   docker compose up
    ```
 
-   ```bash
-   yarn run dev
-   ```
+7. Open [http://localhost:3000](http://localhost:3000) to see the Vibekit frontend.
 
-5. Open [http://localhost:3000](http://localhost:3000) to see the app.
+### 🤖 Model Configuration & Setup
+
+> 🚨 **IMPORTANT**: Getting errors when chatting? Read this section!
+
+## The Default Model Problem
+
+> ⚠️ **Error Alert**: Vibekit uses `google/gemini-2.5-pro-preview` as the default model in `typescript/clients/web/lib/ai/providers.ts`, which is a **paid model**. If you don't have credits, you'll get errors! 💥
+
+#### How to Switch to Free Models
+
+**🔍 Step 1: Find Free Models**
+
+1. 🌐 Visit [OpenRouter Models](https://openrouter.ai/models)
+2. 💰 From the left panel, select **"FREE"** in prompt pricing filter, also added a screenshot below for your reference
+3. 📋 Browse all available free LLM models
+
+### Here's the screenshot:
+
+![image](https://github.com/user-attachments/assets/11bff1a5-865f-4fe4-8049-12b465ded44d)
+
+**🔄 Step 2: Replace the Model**
+Replace `google/gemini-2.5-pro-preview` with your chosen free model everywhere in the code.
+
+#### ⚠️ Model Compatibility Warning
+
+> 🛑 **CAUTION**: Some free models don't play nice with MCP servers and will refuse connections!
+
+**❌ Example of problematic model:**
+
+```
+google/gemma-3n-e4b-it:free → May cause errors in Vibekit
+```
+
+#### ✅ Battle-Tested Free Models
+
+These models work great with Vibekit! 🎯
+
+```
+meta-llama/llama-4-scout:free
+meta-llama/llama-4-maverick:free
+meta-llama/llama-3.3-70b-instruct:free
+```
+
+#### 🧪 Test Before You Deploy
+
+**Before using any model in Vibekit, test it first!**
+
+🔗 **Testing Playground**: [OpenRouter API Reference](https://openrouter.ai/docs/api-reference/chat-completion?explorer=true)
+
+**Testing Steps:**
+
+1. 🔑 Enter your OpenRouter API key
+2. 🎯 Select your preferred free model
+3. 💬 Add a test prompt in the content parameter
+4. 🚀 Click "Send Request" (upper right corner)
+5. ✅ No errors = Model is Vibekit-ready!
+6. ❌ Got errors = Try a different model
+
+### For your reference here a attached screenshot:
+
+![image](https://github.com/user-attachments/assets/6f73e9a1-4d03-437f-bf9a-f71c7b408f24)
+
+> 💡 **Pro Tip**: Always test with a simple prompt like "Hello, how are you?" before integrating into Vibekit!
 
 #### For Windows Users (Using WSL):
 
@@ -162,245 +199,162 @@ forge --version
 
    ```bash
    git config --global user.name "Your Name"
-   ```
-
-   ```bash
    git config --global user.email "your.email@example.com"
    ```
 
-3. Clone the repository:
+3. 🔄 **From here, all steps are the same as Mac/Ubuntu users above!**
 
-   ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git
-   ```
+   Please follow steps 2-6 from the **"For Ubuntu/Mac Users"** section above, starting from cloning the repository.
 
-   ```bash
-   cd speedrun_stylus
-   ```
-
-   ```bash
-   yarn install
-   ```
-
-
-4. Start the local devnode in Docker:
-
-   ```bash
-   cd packages/stylus-demo
-   ```
-
-   ```bash
-   bash run-dev-node.sh
-   ```
-
-5. **Copy the contract address** from the bash terminal output. You will need to paste this address into the `contractAddress` variable in the `DebugContract` component.
-
-> 💡 **Note**: If both contract addresses are the same, you don't need to do anything - you're ready to go and interact with the stylus-based smart contracts written in RUST!
-
-
-![DockerImg](https://github.com/user-attachments/assets/04159bef-cc35-442f-b67a-5e8f7033db43)
-
-<p align="center"><em>Docker_Img</em></p>
-
-6. In a second WSL terminal window, start your frontend:
-
-   ```bash
-   cd speedrun_stylus/packages/nextjs
-   ```
-
-   ```bash
-   yarn run dev
-   ```
-
-7. Open [http://localhost:3000](http://localhost:3000) to see the app.
+> 📝 **Note**: All subsequent steps including model configuration are identical for Windows WSL users.
 
 ### 🛠️ Troubleshooting Common Issues
 
-#### 1. `stylus` Not Recognized
+#### 1. Docker Permission Denied
 
-If you encounter an error stating that `stylus` is not recognized as an external or internal command, run the following command in your terminal:
-
-```bash
-sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
-```
-
-After that, check if `stylus` is installed by running:
+If you encounter a permission denied error when running Docker commands, try running with `sudo`:
 
 ```bash
-cargo stylus --version
+sudo docker compose up
 ```
 
-If the version is displayed, `stylus` has been successfully installed and the path is correctly set.
+#### 2. Frontend Errors or Database Issues
 
-#### 2. ABI Not Generated
+If you previously ran `docker compose up` with an older version and encounter errors:
 
-If you face issues with the ABI not being generated, you can try one of the following solutions:
-
-- **Restart Docker Node**: Pause and restart the Docker node and the local setup of the project. You can do this by deleting all ongoing running containers and then restarting the local terminal using:
-  ```bash
-  yarn run dev
-  ```
-- **Modify the Script**: In the `run-dev-node.sh` script, replace the line:
-
-  ```bash
-  cargo stylus export-abi
-  ```
-
-  with:
-
-  ```bash
-  cargo run --manifest-path=Cargo.toml --features export-abi
-  ```
-
-- **Access Denied Issue**: If you encounter an access denied permission error during ABI generation, run the following command and then execute the script again:
-  ```bash
-  sudo chown -R $USER:$USER target
-  ```
-
-#### 3. 🚨 Fixing Line Endings and Running Shell Scripts in WSL
-
-> ⚠️ This guide provides step-by-step instructions to resolve the Command not found error caused by CRLF line endings in shell scripts when running in a WSL environment.
-
-Shell scripts created in Windows often have `CRLF` line endings, which cause issues in Unix-like environments such as WSL. To fix this:
-
-**Using `dos2unix`:**
-
-1. Install `dos2unix` (if not already installed):
-
+1. Clear your browser cache.
+2. Run the following command:
    ```bash
-   sudo apt install dos2unix
+   docker compose down && docker volume rm typescript_db_data && docker compose build web --no-cache && docker compose up
    ```
 
-2. Convert the script's line endings:
+#### 3. Environment Variables Not Loading
 
-   ```bash
-   dos2unix run-dev-node.sh
-   ```
+Make sure your `.env` file is properly configured:
 
-3. Make the Script Executable:
+- Check that the file is named exactly `.env` (not `.env.txt`)
+- Ensure all required API keys are populated
+- Restart the Docker containers after making changes
 
-   ```bash
-   chmod +x run-dev-node.sh
-   ```
+#### 4. Frontend Changes Not Reflecting
 
-4. Run the Script in WSL:
-   ```bash
-   bash run-dev-node.sh
-   ```
+If you've made frontend changes and restarted Docker containers but don't see the updates:
 
----
+- **Important**: You must clear your browser cache before restarting containers for frontend changes to take effect
+- Frontend changes require cache clearing to take effect after container restart
 
-## 🚀 Submitting Your Challenge
+#### 5. Port Already in Use
 
-After you have completed the setup and are ready to submit your solution, follow these steps:
+If port 3000 is already in use:
 
-1. **Create a New GitHub Repository**
-   - Go to [GitHub](https://github.com/) and create a new repository (public or private as required by the challenge).
-
-2. **Set Your Local Repository's Remote URL**
-   - In your project directory, update the remote URL to your new repository:
-     ```bash
-     git remote set-url origin https://github.com/yourusername/your-repo.git
-     ```
-
-3. **Push Your Code to GitHub**
-   - Add and commit any changes if you haven't already:
-     ```bash
-     git add .
-     git commit -m "Initial commit for challenge submission"
-     ```
-   - Push your code:
-     ```bash
-     git push -u origin counter
-     ```
-
-4. **Submit Your Challenge**
-   - Copy your repository link in the following format (without `.git` at the end):
-     ```
-     https://github.com/yourusername/your-repo
-     ```
-   - Use this link to submit your challenge as instructed.
+- Stop any other applications using port 3000
+- Or modify the port in the Docker configuration
 
 ---
 
 ## 💫 Checkpoint 1: Frontend Magic
 
-> ⛽ You'll be redirected to the below page after you complete checkpoint 0
+> ⛽ You'll be redirected to the Vibekit dashboard after you complete checkpoint 0
 
-![image](https://github.com/user-attachments/assets/e4b8dc4a-f304-43ef-8817-ae6d028beea4)
+The Vibekit frontend provides a beautiful interface to interact with various DeFi agents:
 
-> Then you have to click on the debug contracts to start interacting with your contract. Click on "Debug Contracts" from the Navbar or from the Debug Contracts Div placed in the middle of the screen
+![image](https://github.com/user-attachments/assets/322e6b7c-8ed3-4d48-8c42-19a742bf1c7b)
 
-![image](https://github.com/user-attachments/assets/11197d34-bb2a-4ab7-8f06-3ff2dfabb67a)
+> Navigate through the agent selector to choose different agents like lending, liquidity, or swapping agents
+
+![image](https://github.com/user-attachments/assets/11a7c493-89cb-41a0-b4ed-dd8921bf2be3)
 
 The interface allows you to:
 
-1. Set any number
-2. Add numbers
-3. Increment count
-4. Perform multiplications
-5. Track all transactions in the Block Explorer
+1. Select different DeFi agents
+2. Chat with agents using natural language
+3. Execute DeFi operations through agent interactions
+4. Monitor transaction history
+5. View agent reasoning and decision-making process
 
-> After that, you can easily view all of your transactions from the Block Explorer Tab
+## 💼 Take a quick look at the frontend code in `typescript/clients/web/app` to understand the structure.
 
-![image](https://github.com/user-attachments/assets/48ab1e39-7560-4441-b7dc-2acbdf8cedfe)
+## Checkpoint 2: 🤖 Agents Overview
 
-💼 Take a quick look at your deploy script `run-dev-node.sh` in `speedrun-rust/packages/stylus-demo/run-dev-node.sh`.
+🤖 Vibekit comes with several pre-built agents that are automatically started:
 
-📝 If you want to edit the frontend, navigate to `speedrun-rust/packages/nextjs/app` and open the specific page you want to modify. For instance: `/debug/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
+> **Lending Agent**: Handles borrowing and lending operations on Aave
+> **Liquidity Agent**: Manages liquidity provision on various DEXs
+> **Swapping Agent**: Executes token swaps across different protocols
 
----
+Each agent runs as a separate service in Docker and communicates using the MCP protocol.
 
-## Checkpoint 2: 💾 Deploy your contract! 🛰
+## Checkpoint 3: 🚢 Interact with Agents
 
-🛰 You don't need to provide any specifications to deploy your contract because contracts are automatically deployed from the `run-dev-node.sh`
+> 🎯 Start chatting with agents through the web interface at http://localhost:3000
 
-> You can check that below :
+The agents can help you with:
 
-![image](https://github.com/user-attachments/assets/d84c4d6a-be20-426b-9c68-2c021caefb29)
+- **DeFi Operations**: Execute swaps, provide liquidity, borrow/lend
+- **Market Analysis**: Get insights about token prices and market conditions
+- **Portfolio Management**: Track and manage your DeFi positions
+- **Risk Assessment**: Analyze risks before executing operations
 
-The above command will automatically deploy the contract functions written inside `speedrun_stylus/packages/stylus-demo/src/lib.rs`
-
-> This local account will deploy your contracts, allowing you to avoid entering a personal private key because the deployment happens using the pre-funded account's private key.
-
-## Checkpoint 3: 🚢 Ship your frontend! 🚁
-
-> We are deploying all the RUST contracts at the `localhost:8547` endpoint where the nitro devnode is spinning up in Docker. You can check the network where your contract has been deployed in the frontend (http://localhost:3000):
-
-![image](https://github.com/user-attachments/assets/bb82e696-97b9-453e-a7c7-19ebb7bd607f)
-
-🚀 Deploy your NextJS App
-
-```bash
-yarn vercel
-```
-
-> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
-
-> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
-
-⚠️ Run the automated testing function to make sure your app passes
-
-```bash
-yarn test
-```
+🚀 Each interaction is powered by advanced AI that understands DeFi protocols and can execute complex operations safely.
 
 ---
 
-## Checkpoint 4: 📜 Contract Verification
+## Checkpoint 4: 🔧 Customization
 
-You can verify your smart contract by running:
+You can customize and extend Vibekit by:
 
-```bash
-cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
-```
+- **Adding New Agents**: Use templates in `typescript/templates/` to create new agents
+- **Modifying Existing Agents**: Edit agent configurations in `typescript/examples/`
+- **Creating Custom Tools**: Implement new MCP tools in `typescript/lib/mcp-tools/`
+- **Frontend Customization**: Modify the React components in `typescript/clients/web/`
 
-```bash
-cargo stylus deploy -e http://127.0.0.1:8547 --private-key "$your_private_key"
-```
-
-> It is okay if it says your contract is already verified.
+📚 Check out the [Templates Documentation](https://github.com/EmberAGI/arbitrum-vibekit/tree/main/typescript/templates/quickstart-agent) for detailed guides on creating custom agents.
 
 ---
 
-> 🏃 Head to your next challenge [here](https://www.speedrunstylus.com/challenge/simple-nft-example).
+## 🏆 How to Submit Vibekit Projects into Speedrun
+
+🎉 **Congratulations!** You've successfully completed all the Vibekit setup steps and have your DeFi agents running locally!
+
+Now it's time to showcase your achievement and submit your project for review. Follow these final steps to complete your speedrun submission:
+
+### 📤 Submission Process
+
+1. **🔄 Push Your Code**:
+
+   - Ensure all your Vibekit code changes are committed and pushed to your GitHub repository
+   - Make sure your `.env` file is **NOT** included (keep your API keys secure!)
+   - Verify that your repository contains all the necessary files and configurations
+
+2. **✅ Final Verification**:
+
+   - Confirm that your Vibekit UI is running successfully at `http://localhost:3000`
+   - Test that you can interact with at least one agent (lending, liquidity, or swapping)
+   - Ensure all Docker containers are running without errors
+
+3. **🚀 Submit Your Challenge**:
+   - Navigate to the speedrun submission portal
+   - Click on the **"Submit Challenge"** button
+   - Paste your repository URL in the submission field
+   - Add any additional notes about your implementation or customizations
+
+### 🔍 What Happens Next?
+
+Once you submit your repository URL:
+
+- ✨ **Acquisition**: We'll acquire your submitted repository
+- 📊 **Update**: We'll update your submission count and provide feedback
+- 🏅 **Recognition**: Successful submissions will be recognized in the speedrun leaderboard
+
+### 💡 Pro Tips for Submission
+
+- **📝 Documentation**: Include clear comments in your code if you made any customizations
+- **🐛 Bug Fixes**: Document any issues you encountered and how you resolved them
+- **🎨 Enhancements**: Highlight any additional features or improvements you added
+- **📸 Screenshots**: Consider adding screenshots of your working setup in your repository
+
+**Ready to submit? Click that Submit Challenge button and join the ranks of successful Vibekit developers!** 🚀
+
+---
+
+_Thank you for completing the Vibekit speedrun challenge! Your contribution helps build the future of DeFi automation._ 💫
