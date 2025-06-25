@@ -126,6 +126,13 @@ Follow these steps to build and run an agent:
    docker compose up
    ```
 
+> ℹ️ **Note:**  
+> Just like the screenshot below, you'll see your agent configurations in **Docker Desktop**.  
+> The displayed services will depend on the agents you've defined in your `agent-config.ts` and `compose.yml` files.
+&nbsp;
+![Docker Desktop Services](assets/Docker.png)
+
+
 7. Open [http://localhost:3000](http://localhost:3000) to see the Vibekit frontend.
 
 ### 🤖 Model Configuration & Setup
@@ -146,7 +153,7 @@ Follow these steps to build and run an agent:
 
 ### Here's the screenshot:
 
-![image](https://github.com/user-attachments/assets/11bff1a5-865f-4fe4-8049-12b465ded44d)
+![OpenRouter Free Models](assets/OpenRouterFreeModels.png)
 
 **🔄 Step 2: Replace the Model**
 Replace `google/gemini-2.5-pro-preview` with your chosen free model everywhere in the code.
@@ -188,7 +195,7 @@ meta-llama/llama-3.3-70b-instruct:free
 
 ### For your reference here a attached screenshot:
 
-![image](https://github.com/user-attachments/assets/6f73e9a1-4d03-437f-bf9a-f71c7b408f24)
+![OpenRouter API Reference](assets/OpenRouterImg.png)
 
 > 💡 **Pro Tip**: Always test with a simple prompt like "Hello, how are you?" before integrating into Vibekit!
 
@@ -258,11 +265,11 @@ If port 3000 is already in use:
 
 The Vibekit frontend provides a beautiful interface to interact with various DeFi agents:
 
-![image](https://github.com/user-attachments/assets/322e6b7c-8ed3-4d48-8c42-19a742bf1c7b)
+![Vibekit Dashboard](assets/VibekitUI1.png)
 
 > Navigate through the agent selector to choose different agents like lending, liquidity, or swapping agents
 
-![image](https://github.com/user-attachments/assets/11a7c493-89cb-41a0-b4ed-dd8921bf2be3)
+![Vibekit Agent Interface](assets/VibekitUI2.png)
 
 The interface allows you to:
 
