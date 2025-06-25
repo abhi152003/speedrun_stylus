@@ -130,7 +130,8 @@ Follow these steps to build and run an agent:
 > Just like the screenshot below, you'll see your agent configurations in **Docker Desktop**.  
 > The displayed services will depend on the agents you've defined in your `agent-config.ts` and `compose.yml` files.
 &nbsp;
-![Docker Desktop Services](assets/Docker.png)
+![Docker Desktop Services](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/Docker.png)
+
 
 
 7. Open [http://localhost:3000](http://localhost:3000) to see the Vibekit frontend.
@@ -153,7 +154,7 @@ Follow these steps to build and run an agent:
 
 ### Here's the screenshot:
 
-![OpenRouter Free Models](assets/OpenRouterFreeModels.png)
+![OpenRouter Free Models](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/OpenRouterFreeModels.png)
 
 **🔄 Step 2: Replace the Model**
 Replace `google/gemini-2.5-pro-preview` with your chosen free model everywhere in the code.
@@ -195,7 +196,7 @@ meta-llama/llama-3.3-70b-instruct:free
 
 ### For your reference here a attached screenshot:
 
-![OpenRouter API Reference](assets/OpenRouterImg.png)
+![OpenRouter API Reference](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/OpenRouterImg.png)
 
 > 💡 **Pro Tip**: Always test with a simple prompt like "Hello, how are you?" before integrating into Vibekit!
 
@@ -265,11 +266,11 @@ If port 3000 is already in use:
 
 The Vibekit frontend provides a beautiful interface to interact with various DeFi agents:
 
-![Vibekit Dashboard](assets/VibekitUI1.png)
+![Vibekit Dashboard](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/VibekitUI1.png)
 
 > Navigate through the agent selector to choose different agents like lending, liquidity, or swapping agents
 
-![Vibekit Agent Interface](assets/VibekitUI2.png)
+![Vibekit Agent Interface](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/VibekitUI2.png)
 
 The interface allows you to:
 
