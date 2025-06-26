@@ -1,321 +1,359 @@
-# 🚩 Challenge #11 : Setup of Vibekit Agents
+# 🚩 Challenge #12: Deep Dive into Vibekit's Three DeFi Agents
 
-🎫 Get started with Vibekit DeFi Agents:
+🎯 **Objective**: Master the three core DeFi agents in Vibekit and understand their deep integration with the Model Context Protocol (MCP) architecture.
 
-👷‍♀️ You'll set up and interact with autonomous DeFi agents using the Vibekit framework. Then, you'll use a modern React frontend to interact with various agents including lending, liquidity, and swapping agents. Finally, you'll deploy and run agents in a Docker environment to experience the full power of DeFi automation! 🚀
+📊 **Difficulty Level**: Easy to Medium
 
-🌟 The final deliverable is a fully functional Vibekit setup that lets users interact with multiple DeFi agents through a beautiful web interface.
+🌟 **Challenge Goal**: By the end of this challenge, you'll have a comprehensive understanding of how Vibekit's agents operate, communicate via MCP, and execute complex DeFi operations across multiple protocols.
 
-## 📙 Introduction
+## 🏗️ Vibekit Agent Architecture Overview
 
-Vibekit is the polyglot toolkit for vibe coding smart, autonomous DeFi agents that vibe with the blockchain. Whether you're automating trades, managing liquidity, or integrating with on-chain and off-chain data, Vibekit makes it effortless and fun.
+Vibekit implements a sophisticated multi-agent system where each agent specializes in specific DeFi operations. The system follows a clean separation of concerns with each agent running as an independent microservice, all orchestrated through Docker containers and unified via the MCP (Model Context Protocol).
 
-At its core, Vibekit uses the Model Context Protocol (MCP) to standardize how agents connect with tools and data. It includes built-in Agent2Agent (A2A) integration, so the agents can easily work together. Vibekit also works smoothly with popular frameworks like Eliza and LangGraph, just add our MCP tools to your existing agents and watch them level up with DeFi superpowers!
+### 🐳 Docker Service Architecture
 
-## 🧬 Repository Organization
+When you run `docker compose up`, Vibekit starts the following services:
 
-Vibekit is structured as a monorepo with TypeScript at its core, with a Rust implementation is on the horizon. Here's how it's organized:
-
-- `clients/`: Clients for front-end interaction with agents.
-
-- `templates/`: Vibekit framework agents to use as a starting template to build your own agent.
-
-- `examples/`: Agent examples that demonstrate the use of Ember AI's MCP tools.
-
-- `lib/`: Core libraries and tools.
-
-- `mcp-tools/`: Implementations of MCP tools.
-
-### 📙 For more informations you can visit the below link:
-
-- [Vibekit Documentation](https://github.com/EmberAGI/arbitrum-vibekit)
-
-## Checkpoint 0: 📦 Prerequisites 📚
-
-Before starting, ensure you have the following installed:
-
-- [Node.js (>= v18.17)](https://nodejs.org/en/download/)
-- [pnpm](https://pnpm.io/installation)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [WSL (for Windows users)](https://www.geeksforgeeks.org/how-to-install-wsl2-windows-subsystem-for-linux-2-on-windows-10/)
-
-### 🔧 Version Checking
-
-Ensure your tools versions after successful installations:
-
-```bash
-# Check your versions
-pnpm --version
-docker --version
-docker compose version
+```yaml
+📊 Service Overview:
+├── 🌐 Web Frontend (Port 3000)
+├── 🗄️  PostgreSQL Database (Internal)
+├── 💰 Lending Agent (Port 3001)
+├── 🔄 Swapping Agent (Port 3005)
+├── 💧 Liquidity Agent (Port 3002)
+└── 📈 Pendle Agent (Port 3003)
 ```
 
-> 💡 If your are on an M-series Mac, you need to install Docker using the [dmg package](https://docs.docker.com/desktop/setup/install/mac-install/) supplied officially by Docker rather than through Homebrew or other means to avoid build issues.
-
-## ⚡ Developer Quickstart
-
-> ⚠️ **IMPORTANT**: Vibekit currently only supports Arbitrum and Ethereum mainnet configurations. Testnet support is not available as of now.
-
-Follow these steps to build and run an agent:
-
-### 🚩 Setup Instructions
-
-#### For Ubuntu/Mac Users:
-
-1. Open your terminal.
-2. Clone the repository:
-
-   ```bash
-   git clone https://github.com/EmberAGI/arbitrum-vibekit.git
-   cd arbitrum-vibekit
-   ```
-
-3. Navigate to the TypeScript directory and install dependencies:
-
-   ```bash
-   cd typescript
-   pnpm install
-   ```
-
-   > 💡 **Important**: After cloning the repository, you must run `pnpm install` in the typescript directory to install all project dependencies before proceeding.
-
-4. Configure environment variables:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-5. 🔑 **Configure your environment variables:**
-
-   Edit the `.env` file and populate it with your API keys:
-
-   **Step 1:** 🔓 Uncomment this variable:
-
-   ```bash
-   MCP_TOOL_TIMEOUT_MS=90000
-   ```
-
-   **Step 2:** 🌐 Get your OpenRouter API key:
-
-   - Visit [🔗 OpenRouter API Keys](https://openrouter.ai/settings/keys)
-   - Click "Create Key"
-   - ⚠️ **Important**: Set "Credit limit (optional)" to **$0**
-   - 📋 Copy the generated key and paste it in your `.env` file
-
-   **Step 3:** 🔗 Get your QuickNode API credentials (Required for on-chain transactions):
-
-   > ⚠️ **Important**: Any on-chain transactions like swapping, buying tokens, providing liquidity, or lending to AAVE require valid QuickNode credentials. Without them, you'll receive a **401 Unauthorized error**.
-
-   - Visit [🔗 QuickNode Dashboard](https://dashboard.quicknode.com/endpoints)
-   - Complete authentication first
-   - Create an Arbitrum Mainnet endpoint to do any transaction on Arbitrum
-   - Your endpoint URL will look like: `https://rough-lively-example.arbitrum-mainnet.quiknode.pro/3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b/`
-
-   **Configure in your `.env` file:**
-
-   ```bash
-   QUICKNODE_SUBDOMAIN=rough-lively-example
-   QUICKNODE_API_KEY=3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b
-   ```
-
-   > 💡 **Breakdown**: In the URL above, `rough-lively-example` is your **QUICKNODE_SUBDOMAIN** and `3ergrt62e53b2d4dfiuebfiuerbfir086f1b705f07b` is your **QUICKNODE_API_KEY** (everything after `arbitrum-mainnet.quiknode.pro/`).
-
-6. Start the services with Docker Compose:
-
-   ```bash
-   docker compose up
-   ```
-
-> ℹ️ **Note:**  
-> Just like the screenshot below, you'll see your agent configurations in **Docker Desktop**.  
-> The displayed services will depend on the agents you've defined in your `agent-config.ts` and `compose.yml` files.
-&nbsp;
-![Docker Desktop Services](assets/Docker.png)
-
-
-7. Open [http://localhost:3000](http://localhost:3000) to see the Vibekit frontend.
-
-### 🤖 Model Configuration & Setup
-
-> 🚨 **IMPORTANT**: Getting errors when chatting? Read this section!
-
-## The Default Model Problem
-
-> ⚠️ **Error Alert**: Vibekit uses `google/gemini-2.5-pro-preview` as the default model in `typescript/clients/web/lib/ai/providers.ts`, which is a **paid model**. If you don't have credits, you'll get errors! 💥
-
-#### How to Switch to Free Models
-
-**🔍 Step 1: Find Free Models**
-
-1. 🌐 Visit [OpenRouter Models](https://openrouter.ai/models)
-2. 💰 From the left panel, select **"FREE"** in prompt pricing filter, also added a screenshot below for your reference
-3. 📋 Browse all available free LLM models
-
-### Here's the screenshot:
-
-![OpenRouter Free Models](assets/OpenRouterFreeModels.png)
-
-**🔄 Step 2: Replace the Model**
-Replace `google/gemini-2.5-pro-preview` with your chosen free model everywhere in the code.
-
-#### ⚠️ Model Compatibility Warning
-
-> 🛑 **CAUTION**: Some free models don't play nice with MCP servers and will refuse connections!
-
-**❌ Example of problematic model:**
-
-```
-google/gemma-3n-e4b-it:free → May cause errors in Vibekit
-```
-
-#### ✅ Battle-Tested Free Models
-
-These models work great with Vibekit! 🎯
-
-```
-meta-llama/llama-4-scout:free
-meta-llama/llama-4-maverick:free
-meta-llama/llama-3.3-70b-instruct:free
-```
-
-#### 🧪 Test Before You Deploy
-
-**Before using any model in Vibekit, test it first!**
-
-🔗 **Testing Playground**: [OpenRouter API Reference](https://openrouter.ai/docs/api-reference/chat-completion?explorer=true)
-
-**Testing Steps:**
-
-1. 🔑 Enter your OpenRouter API key
-2. 🎯 Select your preferred free model
-3. 💬 Add a test prompt in the content parameter
-4. 🚀 Click "Send Request" (upper right corner)
-5. ✅ No errors = Model is Vibekit-ready!
-6. ❌ Got errors = Try a different model
-
-### For your reference here a attached screenshot:
-
-![OpenRouter API Reference](assets/OpenRouterImg.png)
-
-> 💡 **Pro Tip**: Always test with a simple prompt like "Hello, how are you?" before integrating into Vibekit!
-
-#### For Windows Users (Using WSL):
-
-1. Open your WSL terminal.
-2. Ensure you have set your Git username and email globally:
-
-   ```bash
-   git config --global user.name "Your Name"
-   git config --global user.email "your.email@example.com"
-   ```
-
-3. 🔄 **From here, all steps are the same as Mac/Ubuntu users above!**
-
-   Please follow steps 2-6 from the **"For Ubuntu/Mac Users"** section above, starting from cloning the repository.
-
-> 📝 **Note**: All subsequent steps including model configuration are identical for Windows WSL users.
-
-### 🛠️ Troubleshooting Common Issues
-
-#### 1. Docker Permission Denied
-
-If you encounter a permission denied error when running Docker commands, try running with `sudo`:
-
-```bash
-sudo docker compose up
-```
-
-#### 2. Frontend Errors or Database Issues
-
-If you previously ran `docker compose up` with an older version and encounter errors:
-
-1. Clear your browser cache.
-2. Run the following command:
-   ```bash
-   docker compose down && docker volume rm typescript_db_data && docker compose build web --no-cache && docker compose up
-   ```
-
-#### 3. Environment Variables Not Loading
-
-Make sure your `.env` file is properly configured:
-
-- Check that the file is named exactly `.env` (not `.env.txt`)
-- Ensure all required API keys are populated
-- Restart the Docker containers after making changes
-
-#### 4. Frontend Changes Not Reflecting
-
-If you've made frontend changes and restarted Docker containers but don't see the updates:
-
-- **Important**: You must clear your browser cache before restarting containers for frontend changes to take effect
-- Frontend changes require cache clearing to take effect after container restart
-
-#### 5. Port Already in Use
-
-If port 3000 is already in use:
-
-- Stop any other applications using port 3000
-- Or modify the port in the Docker configuration
+![Docker Services Overview](assets/DockerAgentsImg.png)
+_Docker Desktop showing all running containers with their respective ports: Web (3000), Lending (3001), Liquidity (3002), Pendle (3003), Swapping (3005)_
 
 ---
 
-## 💫 Checkpoint 1: Frontend Magic
+## 🏗️ Vibekit Agent Architecture Deep Dive
 
-> ⛽ You'll be redirected to the Vibekit dashboard after you complete checkpoint 0
 
-The Vibekit frontend provides a beautiful interface to interact with various DeFi agents:
+### 🔑 Key Architectural Principles
 
-![Vibekit Dashboard](assets/VibekitUI1.png)
+**🎯 Agent-to-Agent (A2A) Protocol**: Each agent operates as an independent MCP server, enabling seamless communication and composability.
 
-> Navigate through the agent selector to choose different agents like lending, liquidity, or swapping agents
+**🧠 LLM Orchestration**: AI models handle intent routing, sequential execution, conditional logic, and error recovery across all operations.
 
-![Vibekit Agent Interface](assets/VibekitUI2.png)
+**🔧 Skill-Tool Separation**: 
+- **Skills** = External interface (what users see)
+- **Tools** = Internal implementation (how operations execute)
 
-The interface allows you to:
-
-1. Select different DeFi agents
-2. Chat with agents using natural language
-3. Execute DeFi operations through agent interactions
-4. Monitor transaction history
-5. View agent reasoning and decision-making process
-
-## 💼 Take a quick look at the frontend code in `typescript/clients/web/app` to understand the structure.
-
-## Checkpoint 2: 🤖 Agents Overview
-
-🤖 Vibekit comes with several pre-built agents that are automatically started:
-
-> **Lending Agent**: Handles borrowing and lending operations on Aave
-> **Liquidity Agent**: Manages liquidity provision on various DEXs
-> **Swapping Agent**: Executes token swaps across different protocols
-
-Each agent runs as a separate service in Docker and communicates using the MCP protocol.
-
-## Checkpoint 3: 🚢 Interact with Agents
-
-> 🎯 Start chatting with agents through the web interface at http://localhost:3000
-
-The agents can help you with:
-
-- **DeFi Operations**: Execute swaps, provide liquidity, borrow/lend
-- **Market Analysis**: Get insights about token prices and market conditions
-- **Portfolio Management**: Track and manage your DeFi positions
-- **Risk Assessment**: Analyze risks before executing operations
-
-🚀 Each interaction is powered by advanced AI that understands DeFi protocols and can execute complex operations safely.
+**📡 MCP Integration**: Universal protocol for connecting agents to blockchain services, ensuring consistent communication patterns.
 
 ---
 
-## Checkpoint 4: 🔧 Customization
+## 🎯 Three Important Vibekit Agents
 
-You can customize and extend Vibekit by:
+### 1. 💰 Lending Agent (AAVE Protocol)
 
-- **Adding New Agents**: Use templates in `typescript/templates/` to create new agents
-- **Modifying Existing Agents**: Edit agent configurations in `typescript/examples/`
-- **Creating Custom Tools**: Implement new MCP tools in `typescript/lib/mcp-tools/`
-- **Frontend Customization**: Modify the React components in `typescript/clients/web/`
+**Port**: `3001` | **Container**: `lending-agent-no-wallet`
 
-📚 Check out the [Templates Documentation](https://github.com/EmberAGI/arbitrum-vibekit/tree/main/typescript/templates/quickstart-agent) for detailed guides on creating custom agents.
+The Lending Agent specializes in AAVE protocol interactions, enabling users to supply, borrow, repay, and withdraw assets across different chains.
+
+#### 🔧 Available Actions:
+
+```typescript
+suggestedActions: [
+  {
+    title: 'Deposit WETH',
+    label: 'to my balance',
+    action: 'Deposit WETH to my balance',
+  },
+  {
+    title: 'Check',
+    label: 'balance',
+    action: 'Check balance',
+  },
+];
+```
+
+#### 🛠️ Core Capabilities:
+
+- **Supply (Deposit)**: Deposit tokens to earn interest
+- **Borrow**: Borrow against your collateral
+- **Repay**: Pay back borrowed amounts
+- **Withdraw**: Withdraw supplied tokens
+- **Get Positions**: View all lending/borrowing positions
+- **Ask Encyclopedia**: Query AAVE protocol documentation
+
+#### 📊 Action Examples:
+
+**Deposit Transaction:**
+![Lending Deposit Transaction](assets/LendingImg.png)
+_Depositing ARB token into the AAVE protocol with transaction preview and approval flow_
+
+**Transaction Execution:**
+![Lending Transaction Execution](assets/LendingTxImg.png)
+_Transaction approval and execution process, showing 0.01 ARB deposited balance in AAVE_
+
+---
+
+### 2. 🔄 Trading/Swapping Agent (Camelot DEX)
+
+**Port**: `3005` | **Container**: `swapping-agent-no-wallet`
+
+The Swapping Agent handles token exchanges through Camelot DEX on Arbitrum, providing optimal swap routes and price execution.
+
+#### 🔧 Available Actions:
+
+```typescript
+suggestedActions: [
+  {
+    title: 'Swap USDC for ETH',
+    label: 'on Arbitrum Network.',
+    action: 'Swap USDC for ETH tokens from Arbitrum to Arbitrum.',
+  },
+  {
+    title: 'Buy ARB',
+    label: 'on Arbitrum.',
+    action: 'Buy ARB token.',
+  },
+];
+```
+
+#### 🛠️ Core Capabilities:
+
+- **Token Swaps**: Exchange one token for another
+- **Price Quotes**: Get real-time swap quotes
+- **Slippage Management**: Automatic slippage protection
+- **Route Optimization**: Find the best trading routes
+- **Multi-hop Swaps**: Execute complex multi-step trades
+
+#### 📊 Action Examples:
+
+**Token Swap:**
+![Swapping Transaction](assets/SwappingImg.png)
+_Swapping 1 USDC for ARB on Arbitrum mainnet with transaction details and execution flow_
+
+---
+
+### 3. 💧 Liquidity (LPing) Agent (Camelot DEX)
+
+**Port**: `3002` | **Container**: `liquidity-agent-no-wallet`
+
+The Liquidity Agent manages liquidity provision on Camelot DEX, helping users provide liquidity and earn fees from trading pairs.
+
+#### 🔧 Available Actions:
+
+```typescript
+suggestedActions: [
+  {
+    title: 'Provide Liquidity',
+    label: 'on Arbitrum.',
+    action: 'Provide Liquidity on Arbitrum.',
+  },
+  {
+    title: 'Check',
+    label: 'Liquidity positions',
+    action: 'Check Positions',
+  },
+];
+```
+
+#### 🛠️ Core Capabilities:
+
+- **Add Liquidity**: Provide tokens to liquidity pools
+- **Remove Liquidity**: Withdraw tokens from pools
+- **Position Management**: Track LP token positions
+- **Yield Calculation**: Monitor earnings from fees
+- **Pool Analytics**: Analyze pool performance and APR
+
+#### 📊 Action Examples:
+
+**Available Liquidity Pools:**
+![Available Liquidity Pools](assets/LiquidityPositionPoolsImg.png)
+_Available liquidity pools on Arbitrum where users can provide liquidity and earn fees_
+
+**LP Positions:**
+![Liquidity Positions](assets/LiquidityPositionImg.png)
+_User's current liquidity positions showing no active positions in the portfolio_
+
+---
+
+## 🔄 Universal Agent Workflow: From Chat to Transaction
+
+Let's understand how **all Vibekit agents** work using a lending example: **"Deposit 1 ARB to my balance"**.
+
+### 🏗️ Universal Flow Overview
+
+```mermaid
+graph TB
+    A[💬 User types message] --> B[🌐 Frontend Port 3000]
+    B --> C[🤖 Agent Router]
+    C --> D[🧠 AI processes request]
+    D --> E[🔧 Calls appropriate tool]
+    E --> F[🔗 MCP Server connection]
+    F --> G[⛓️ Blockchain interaction]
+    G --> H[📋 Creates transaction plan]
+    H --> I[💾 Saves to database]
+    I --> J[🖼️ Shows result to user]
+```
+
+### 🔍 Step-by-Step Universal Agent Workflow
+
+#### Step 1: 💬 User Input
+
+- User types any DeFi request: **"Deposit 1 ARB"**, **"Swap USDC for ETH"**, **"Provide liquidity"**
+- Frontend identifies the appropriate agent based on user selection
+- Routes to correct agent port: **Lending (3001)**, **Trading (3005)**, **Liquidity (3002)**
+
+#### Step 2: 🤖 Agent Receives Message
+
+The selected agent (`index.ts`) processes the message:
+
+```typescript
+// Agent processes the natural language request
+const taskResponse = await agent.processUserInput(userMessage, userAddress);
+```
+
+#### Step 3: 🧠 AI Understanding
+
+The agent's AI model (OpenRouter LLM) analyzes the message:
+
+- **Understands user intent**: deposit, swap, provide liquidity, etc.
+- **Determines appropriate tool**: supply, swap, addLiquidity, etc.
+- **Extracts parameters**: `tokenName`, `amount`, and protocol-specific details
+
+#### Step 4: 🔧 Tool Execution
+
+The agent calls the relevant handler (`agentToolHandlers.ts`):
+
+```typescript
+// Different agents call different handlers
+handleSupply(); // Lending Agent
+handleBorrow(); // Lending Agent
+handleWithdraw(); // Lending Agent
+handleRepay(); // Lending Agent
+handleGetUserPositions(); // Lending Agent
+handleGetLiquidityPools(); // Liquidity Agent
+handleGetUserLiquidityPositions(); // Liquidity Agent
+handleSupplyLiquidity(); // Liquidity Agent
+handleWithdrawLiquidity(); // Liquidity Agent
+handleSwapTokens(); // Swapping Agent
+```
+
+Each agent validates:
+
+- ✅ **Token/pair compatibility** with the protocol
+- 🔍 **User's wallet balance** for the operation
+- ❌ **Stops execution** if insufficient funds
+
+#### Step 5: 🔗 MCP Server Communication
+
+Agent connects to Ember AI's MCP server with protocol-specific parameters:
+
+```typescript
+// Different MCP tools for different protocols
+await mcpClient.callTool({
+  name: 'supply', // AAVE lending
+  name: 'swap', // Camelot trading
+  name: 'addLiquidity', // Camelot LP
+  // Common parameters: tokenAddress, chainId, amount, userAddress
+});
+```
+
+#### Step 6: ⛓️ Protocol & Blockchain Interaction
+
+Ember AI's MCP server interacts with the relevant DeFi protocol:
+
+- **Lending Agent**: AAVE protocol rates, health factors, liquidation thresholds
+- **Trading Agent**: Camelot DEX routes, slippage calculations, price impact
+- **Liquidity Agent**: Pool information, LP token calculations, fee structures
+
+#### Step 7: 📋 Response Processing
+
+Agent receives MCP response and builds structured output:
+
+```typescript
+return {
+  status: 'completed',
+  message: 'Transaction plan created. Ready to sign.',
+  artifacts: [{ name: 'transaction-plan', data: protocolSpecificDetails }],
+};
+```
+
+#### Step 8: 💾 Database Storage
+
+Vibekit automatically saves all interactions across agents:
+
+- **Chat messages**: User requests and agent responses
+- **Transaction plans**: Complete transaction data for all protocols
+- **Conversation history**: Cross-agent conversation tracking
+- **Agent artifacts**: Protocol-specific data (AAVE positions, LP tokens, etc.)
+
+#### Step 9: 🖼️ Frontend Display
+
+User receives consistent interface across all agents:
+
+- ✅ **Agent response**: Protocol-specific success message
+- 📊 **Transaction preview**: Relevant details (APY, slippage, fees, etc.)
+- 🖊️ **Action buttons**: "Approve" and "Execute Transaction"
+- 💬 **Updated chat history**: Persistent conversation log
+
+> **🔄 Universal Applicability**: All three agents (Lending, Trading, Liquidity) follow this exact same workflow. The only differences are in the specific tools called, MCP endpoints used, and protocol interactions performed. The core chat-to-transaction flow remains consistent across all DeFi operations.
+
+### 🎯 Key Components Working Together
+
+**🏠 Lending Agent Files:**
+
+- `index.ts` - Server that receives messages
+- `agent.ts` - Main logic and AI processing
+- `agentToolHandlers.ts` - Actual DeFi operations
+- `encyclopedia/` - 200KB+ of AAVE documentation for AI context
+
+**💾 Chat History Management:**
+
+- Every conversation is saved with timestamps
+- Users can view/delete previous chats
+- Transaction plans are stored as artifacts
+- All data persists in PostgreSQL database
+
+### 🚨 Error Handling
+
+If something goes wrong:
+
+- **No balance**: "Insufficient WETH balance"
+- **Network issues**: "Could not verify balance"
+- **MCP errors**: "Failed to create transaction plan"
+- **AI errors**: Falls back to error message
+
+This simple flow shows how Vibekit transforms natural language into blockchain transactions while keeping everything secure and user-friendly! 🚀
+
+### 🔄 Chat History Management
+
+Vibekit provides comprehensive chat history management:
+
+#### 📚 Conversation Storage
+
+```typescript
+// Each conversation is stored with metadata
+interface Conversation {
+  id: string;
+  userId: string;
+  agentId: ChatAgentId;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+  messages: Message[];
+}
+```
+
+#### 🗑️ History Management Features
+
+Users can:
+
+- **View All Conversations**: Browse past interactions with any agent
+- **Delete Conversations**: Remove individual chat sessions
+- **Clear All History**: Wipe all conversations for privacy
+- **Export Conversations**: Download chat history for records
+
+![Chat History Management](assets/VibekitUI2.png)
+_UI showing conversation list with delete/export options for managing chat history_
+
 
 ---
 
@@ -345,23 +383,32 @@ Now it's time to showcase your achievement and submit your project for review. F
    - Paste your repository URL in the submission field
    - Add any additional notes about your implementation or customizations
 
-### 🔍 What Happens Next?
+---
 
-Once you submit your repository URL:
+## 📚 Complete Architecture Documentation
 
-- ✨ **Acquisition**: We'll acquire your submitted repository
-- 📊 **Update**: We'll update your submission count and provide feedback
-- 🏅 **Recognition**: Successful submissions will be recognized in the speedrun leaderboard
+### 🔍 Deep Dive into Vibekit's Complete System
 
-### 💡 Pro Tips for Submission
+For users who want to understand the complete end-to-end architecture of Vibekit, including:
 
-- **📝 Documentation**: Include clear comments in your code if you made any customizations
-- **🐛 Bug Fixes**: Document any issues you encountered and how you resolved them
-- **🎨 Enhancements**: Highlight any additional features or improvements you added
-- **📸 Screenshots**: Consider adding screenshots of your working setup in your repository
+- 🏗️ **Complete Agent Architecture**: Detailed breakdown of all agent components and interactions
+- 📡 **MCP Server Implementation**: How Model Context Protocol servers are structured and communicate
+- 🤖 **AI Model Integration**: How LLMs process user requests and orchestrate multi-step operations
+- 🔄 **Request Processing Flow**: Complete user-to-blockchain transaction lifecycle
+- 🛠️ **Tool & Skill Framework**: Advanced patterns for building custom agents
+- ⛓️ **Blockchain Integration**: Low-level protocol interactions and transaction management
+- 🔐 **Security & Error Handling**: Comprehensive safety mechanisms and recovery strategies
 
-**Ready to submit? Click that Submit Challenge button and join the ranks of successful Vibekit developers!** 🚀
+Visit the complete repository documentation at: **[Vibekit Architecture Deep Dive](https://deepwiki.com/EmberAGI/arbitrum-vibekit)**
+
+This comprehensive resource contains:
+- 📖 **[Overview & Getting Started](https://deepwiki.com/EmberAGI/arbitrum-vibekit/1-overview)** - Complete system overview and setup
+- 🤖 **[AI Agents Detailed Guide](https://deepwiki.com/EmberAGI/arbitrum-vibekit/4-ai-agents)** - In-depth agent implementation details
+- 🏗️ **Architecture Patterns** - Advanced design patterns and best practices
+- 🔧 **Implementation Examples** - Real-world code examples and tutorials
+
+> 💡 **Pro Tip**: The DeepWiki documentation provides interactive code examples and detailed explanations that complement vibekit agents workflow perfectly!
 
 ---
 
-_Thank you for completing the Vibekit speedrun challenge! Your contribution helps build the future of DeFi automation._ 💫
+_Thank you for completing the Vibekit speedrun challenges! Your contribution helps build the future of DeFi automation._ 💫
