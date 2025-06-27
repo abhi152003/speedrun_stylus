@@ -24,7 +24,7 @@ When you run `docker compose up`, Vibekit starts the following services:
 └── 📈 Pendle Agent (Port 3003)
 ```
 
-![Docker Services Overview](assets/DockerAgentsImg.png)
+![Docker Services Overview](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/DockerAgentsImg.png)
 _Docker Desktop showing all running containers with their respective ports: Web (3000), Lending (3001), Liquidity (3002), Pendle (3003), Swapping (3005)_
 
 ---
@@ -83,11 +83,11 @@ suggestedActions: [
 #### 📊 Action Examples:
 
 **Deposit Transaction:**
-![Lending Deposit Transaction](assets/LendingImg.png)
+![Lending Deposit Transaction](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LendingImg.png)
 _Depositing ARB token into the AAVE protocol with transaction preview and approval flow_
 
 **Transaction Execution:**
-![Lending Transaction Execution](assets/LendingTxImg.png)
+![Lending Transaction Execution](http://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LendingTxImg.png)
 _Transaction approval and execution process, showing 0.01 ARB deposited balance in AAVE_
 
 ---
@@ -126,7 +126,7 @@ suggestedActions: [
 #### 📊 Action Examples:
 
 **Token Swap:**
-![Swapping Transaction](assets/SwappingImg.png)
+![Swapping Transaction](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/SwappingImg.png)
 _Swapping 1 USDC for ARB on Arbitrum mainnet with transaction details and execution flow_
 
 ---
@@ -165,11 +165,11 @@ suggestedActions: [
 #### 📊 Action Examples:
 
 **Available Liquidity Pools:**
-![Available Liquidity Pools](assets/LiquidityPositionPoolsImg.png)
+![Available Liquidity Pools](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LiquidityPositionPoolsImg.png)
 _Available liquidity pools on Arbitrum where users can provide liquidity and earn fees_
 
 **LP Positions:**
-![Liquidity Positions](assets/LiquidityPositionImg.png)
+![Liquidity Positions](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LiquidityPositionImg.png)
 _User's current liquidity positions showing no active positions in the portfolio_
 
 ---
@@ -351,7 +351,7 @@ Users can:
 - **Clear All History**: Wipe all conversations for privacy
 - **Export Conversations**: Download chat history for records
 
-![Chat History Management](assets/VibekitUI2.png)
+![Chat History Management](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/VibekitUI2.png)
 _UI showing conversation list with delete/export options for managing chat history_
 
 
