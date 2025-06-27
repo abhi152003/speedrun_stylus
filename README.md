@@ -325,26 +325,26 @@ Through natural language commands, you can:
 Here are some examples of interacting with the Counter Agent through Vibekit's beautiful UI:
 
 **📊 Checking Current Counter Value:**
-![Check Counter Value](assets/NumCheck.png)
+![Check Counter Value](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/NumCheck.png)
 
 **🔢 Setting Counter to Specific Value:**
-![Set Counter Value](assets/SetVal.png)
+![Set Counter Value](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/SetVal.png)
 
 **➕ Adding Numbers to Counter:**
-![Add Numbers to Counter](assets/AddNum.png)
+![Add Numbers to Counter](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/AddNum.png)
 
 **✅ Updated Counter Value Confirmation:**
-![Updated Counter Value](assets/UpdatedVal.png)
+![Updated Counter Value](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/UpdatedVal.png)
 
 ### 🔍 Blockchain Verification on Arbiscan
 
 All Counter Agent transactions are verifiable on Arbitrum Sepolia blockchain:
 
 **📋 Contract Details on Arbiscan:**
-![Arbiscan Contract View](assets/ArbScan1.png)
+![Arbiscan Contract View](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/ArbScan1.png)
 
 **📊 Transaction History and Proof:**
-![Arbiscan Transaction Proof](assets/ArtScan2.png)
+![Arbiscan Transaction Proof](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/ArtScan2.png)
 
 > 🔗 **Live Contract**: View our deployed Counter contract at `0x436024c7166956b95820989db24cdebe0ba0fc43` on [Arbitrum Sepolia Explorer](https://sepolia.arbiscan.io/)
 
