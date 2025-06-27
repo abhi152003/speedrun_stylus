@@ -1,409 +1,478 @@
-# 🚩 Challenge #0: 🎟 Simple Counter Example
+# 🚩 Challenge #12: Deep Dive into Vibekit's Three DeFi Agents
 
-🎫 Create a simple Counter:
+🎯 **Objective**: Master the three core DeFi agents in Vibekit and understand their deep integration with the Model Context Protocol (MCP) architecture.
 
-👷‍♀️ You'll compile and deploy your first smart contracts. Then, you'll use a template React app full of important components and hooks. Finally, you'll deploy a Counter contract written in RUST to a public network to share with friends! 🚀
+📊 **Difficulty Level**: Easy to Medium
 
-🌟 The final deliverable is an app that lets users interact with the counter contract. Deploy your contracts to a testnet, then build and upload your app to a public web server.
+🌟 **Challenge Goal**: By the end of this challenge, you'll have a comprehensive understanding of how Vibekit's agents operate, communicate via MCP, and execute complex DeFi operations across multiple protocols.
 
-## Checkpoint 0: 📦 Prerequisites 📚
+## 🏗️ Vibekit Agent Architecture Overview
 
-Before starting, ensure you have the following installed:
+Vibekit implements a sophisticated multi-agent system where each agent specializes in specific DeFi operations. The system follows a clean separation of concerns with each agent running as an independent microservice, all orchestrated through Docker containers and unified via the MCP (Model Context Protocol).
 
-- [Node.js (>= v18.17)](https://nodejs.org/en/download/)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
-- [Git](https://git-scm.com/downloads)
-- [WSL (for Windows users)](https://www.geeksforgeeks.org/how-to-install-wsl2-windows-subsystem-for-linux-2-on-windows-10/)
-- [Docker](https://docs.docker.com/get-docker/)
-- [Curl](https://gcore.com/learning/how-to-install-curl-on-ubuntu)
-- [Rust](https://rustup.rs/) (including `rustc`, `rustup`, and `cargo`) - Install with (⚠️ **Must use WSL terminal to run these commands**):
+### 🐳 Docker Service Architecture
 
-  ```bash
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  ```
+When you run `docker compose up`, Vibekit starts the following services:
 
-  ```bash
-  source ~/.bashrc  # or restart your terminal
-  ```
-
-- cargo-stylus  
-  -> Install cargo-stylus with the below command:
-
-  ```bash
-  cargo install cargo-stylus
-  ```
-
-    > ⚠️ **Note for Ubuntu users**: If you face issues related to pkg-config while trying to install cargo-stylus, run these commands:
-  ```bash
-  sudo apt update
-  sudo apt install pkg-config
-  sudo apt install libssl-dev
-  sudo apt install build-essential
-  ```
-
-
-- [Foundry](https://getfoundry.sh/introduction/installation/) - Required for smart contract development
-
-### Foundry Installation Steps:
-
-#### 1. Open your WSL terminal.
-
-#### 2. Install Foundry using the official install script:
-```bash
-curl -L https://foundry.paradigm.xyz | bash
+```yaml
+📊 Service Overview:
+├── 🌐 Web Frontend (Port 3000)
+├── 🗄️  PostgreSQL Database (Internal)
+├── 💰 Lending Agent (Port 3001)
+├── 🔄 Swapping Agent (Port 3005)
+├── 💧 Liquidity Agent (Port 3002)
+└── 📈 Pendle Agent (Port 3003)
 ```
 
-#### 3. Add Foundry to your shell profile
-
-After installation, you'll see instructions to add Foundry to your shell profile (like .bashrc or .zshrc). Usually, you can do:
-
-```bash
-export PATH="$HOME/.foundry/bin:$PATH"
-```
-
-Add the above line to your ~/.bashrc or ~/.zshrc file, then reload your shell:
-
-```bash
-source ~/.bashrc
-```
-
-```bash
-source ~/.zshrc
-```
-
-#### 4. Install Foundry binaries
-
-```bash
-foundryup
-```
+![Docker Services Overview](assets/DockerAgentsImg.png)
+_Docker Desktop showing all running containers with their respective ports: Web (3000), Lending (3001), Liquidity (3002), Pendle (3003), Swapping (3005)_
 
 ---
 
-### 🔧 Version Requirements
+## 🏗️ Vibekit Agent Architecture Deep Dive
 
-Ensure your tools are ready to use:
 
-#### Check your versions - ⚠️ **Must use WSL terminal to run these commands**
+### 🔑 Key Architectural Principles
 
-```bash
-cargo stylus --version
-```
+**🎯 Agent-to-Agent (A2A) Protocol**: Each agent operates as an independent MCP server, enabling seamless communication and composability.
 
-```bash
-cargo --version
-```
+**🧠 LLM Orchestration**: AI models handle intent routing, sequential execution, conditional logic, and error recovery across all operations.
 
-```bash
-rustup --version
-```
+**🔧 Skill-Tool Separation**: 
+- **Skills** = External interface (what users see)
+- **Tools** = Internal implementation (how operations execute)
 
-```bash
-rustc --version
-```
-
-```bash
-curl --version
-```
-
-```bash
-cast --version
-```
-
-```bash
-forge --version
-```
-
-
-### 🚩 Challenge Setup Instructions
-
-#### For Ubuntu/Mac Users:
-
-1. Open your terminal.
-2. Clone the repository:
-
-   ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git speedrun_stylus_counter
-   ```
-
-   ```bash
-   cd speedrun_stylus_counter
-   ```
-
-   ```bash
-   yarn install
-   ```
-
-3. Start the local devnode in Docker:
-
-   ```bash
-   cd packages/stylus-demo
-   ```
-
-   ```bash
-   bash run-dev-node.sh
-   ```
-
-4. In a second terminal window, start your frontend:
-
-   ```bash
-   cd speedrun_stylus_counter/packages/nextjs
-   ```
-
-   ```bash
-   yarn run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### ⚠️ Important: Contract Address Setup
-
-After running the devnode script, **copy the contract address** from the bash terminal output. You will need to paste this address into the `contractAddress` variable in the `DebugContract` component.
-
-> 💡 **Note**: If both contract addresses are the same, you don't need to do anything - you're ready to go and interact with the stylus-based smart contracts written in RUST!
-
-![DockerImg](https://github.com/user-attachments/assets/04159bef-cc35-442f-b67a-5e8f7033db43)
-
-<p align="center"><em>Docker_Img</em></p>
-
-#### For Windows Users (Using WSL):
-
-> 📝 **Note**: After completing step 4 below, make sure to follow the "Contract Address Setup" section above for configuring your contract address.
-
-1. Open your WSL terminal.
-2. Ensure you have set your Git username and email globally:
-
-   ```bash
-   git config --global user.name "Your Name"
-   ```
-
-   ```bash
-   git config --global user.email "your.email@example.com"
-   ```
-
-3. Clone the repository:
-
-   ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git
-   ```
-
-   ```bash
-   cd speedrun_stylus
-   ```
-
-   ```bash
-   yarn install
-   ```
-
-
-4. Start the local devnode in Docker:
-
-   ```bash
-   cd packages/stylus-demo
-   ```
-
-   ```bash
-   bash run-dev-node.sh
-   ```
-
-5. In a second WSL terminal window, start your frontend:
-
-   ```bash
-   cd speedrun_stylus/packages/nextjs
-   ```
-
-   ```bash
-   yarn run dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### 🛠️ Troubleshooting Common Issues
-
-#### 1. `stylus` Not Recognized
-
-If you encounter an error stating that `stylus` is not recognized as an external or internal command, run the following command in your terminal:
-
-```bash
-sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
-```
-
-After that, check if `stylus` is installed by running:
-
-```bash
-cargo stylus --version
-```
-
-If the version is displayed, `stylus` has been successfully installed and the path is correctly set.
-
-#### 2. ABI Not Generated
-
-If you face issues with the ABI not being generated, you can try one of the following solutions:
-
-- **Restart Docker Node**: Pause and restart the Docker node and the local setup of the project. You can do this by deleting all ongoing running containers and then restarting the local terminal using:
-  ```bash
-  yarn run dev
-  ```
-- **Modify the Script**: In the `run-dev-node.sh` script, replace the line:
-
-  ```bash
-  cargo stylus export-abi
-  ```
-
-  with:
-
-  ```bash
-  cargo run --manifest-path=Cargo.toml --features export-abi
-  ```
-
-- **Access Denied Issue**: If you encounter an access denied permission error during ABI generation, run the following command and then execute the script again:
-  ```bash
-  sudo chown -R $USER:$USER target
-  ```
-
-#### 3. 🚨 Fixing Line Endings and Running Shell Scripts in WSL
-
-> ⚠️ This guide provides step-by-step instructions to resolve the Command not found error caused by CRLF line endings in shell scripts when running in a WSL environment.
-
-Shell scripts created in Windows often have `CRLF` line endings, which cause issues in Unix-like environments such as WSL. To fix this:
-
-**Using `dos2unix`:**
-
-1. Install `dos2unix` (if not already installed):
-
-   ```bash
-   sudo apt install dos2unix
-   ```
-
-2. Convert the script's line endings:
-
-   ```bash
-   dos2unix run-dev-node.sh
-   ```
-
-3. Make the Script Executable:
-
-   ```bash
-   chmod +x run-dev-node.sh
-   ```
-
-4. Run the Script in WSL:
-   ```bash
-   bash run-dev-node.sh
-   ```
+**📡 MCP Integration**: Universal protocol for connecting agents to blockchain services, ensuring consistent communication patterns.
 
 ---
 
-## 🚀 Submitting Your Challenge
+## 🎯 Three Important Vibekit Agents
 
-After you have completed the setup and are ready to submit your solution, follow these steps:
+### 1. 💰 Lending Agent (AAVE Protocol)
 
-1. **Create a New GitHub Repository**
-   - Go to [GitHub](https://github.com/) and create a new repository (public or private as required by the challenge).
+**Port**: `3001` | **Container**: `lending-agent-no-wallet`
 
-2. **Set Your Local Repository's Remote URL**
-   - In your project directory, update the remote URL to your new repository:
-     ```bash
-     git remote set-url origin https://github.com/yourusername/your-repo.git
-     ```
+The Lending Agent specializes in AAVE protocol interactions, enabling users to supply, borrow, repay, and withdraw assets across different chains.
 
-3. **Push Your Code to GitHub**
-   - Add and commit any changes if you haven't already:
-     ```bash
-     git add .
-     git commit -m "Initial commit for challenge submission"
-     ```
-   - Push your code:
-     ```bash
-     git push -u origin counter
-     ```
+#### 🔧 Available Actions:
 
-4. **Submit Your Challenge**
-   - Copy your repository link in the following format (without `.git` at the end):
-     ```
-     https://github.com/yourusername/your-repo
-     ```
-   - Use this link to submit your challenge as instructed.
+```typescript
+suggestedActions: [
+  {
+    title: 'Deposit WETH',
+    label: 'to my balance',
+    action: 'Deposit WETH to my balance',
+  },
+  {
+    title: 'Check',
+    label: 'balance',
+    action: 'Check balance',
+  },
+];
+```
+
+#### 🛠️ Core Capabilities:
+
+- **Supply (Deposit)**: Deposit tokens to earn interest
+- **Borrow**: Borrow against your collateral
+- **Repay**: Pay back borrowed amounts
+- **Withdraw**: Withdraw supplied tokens
+- **Get Positions**: View all lending/borrowing positions
+- **Ask Encyclopedia**: Query AAVE protocol documentation
+
+#### 📊 Action Examples:
+
+**Deposit Transaction:**
+![Lending Deposit Transaction](assets/LendingImg.png)
+_Depositing ARB token into the AAVE protocol with transaction preview and approval flow_
+
+**Transaction Execution:**
+![Lending Transaction Execution](assets/LendingTxImg.png)
+_Transaction approval and execution process, showing 0.01 ARB deposited balance in AAVE_
 
 ---
 
-## 💫 Checkpoint 1: Frontend Magic
+### 2. 🔄 Trading/Swapping Agent (Camelot DEX)
 
-> ⛽ You'll be redirected to the below page after you complete checkpoint 0
+**Port**: `3005` | **Container**: `swapping-agent-no-wallet`
 
-![image](https://github.com/user-attachments/assets/e4b8dc4a-f304-43ef-8817-ae6d028beea4)
+The Swapping Agent handles token exchanges through Camelot DEX on Arbitrum, providing optimal swap routes and price execution.
 
-> Then you have to click on the debug contracts to start interacting with your contract. Click on "Debug Contracts" from the Navbar or from the Debug Contracts Div placed in the middle of the screen
+#### 🔧 Available Actions:
 
-![image](https://github.com/user-attachments/assets/11197d34-bb2a-4ab7-8f06-3ff2dfabb67a)
+```typescript
+suggestedActions: [
+  {
+    title: 'Swap USDC for ETH',
+    label: 'on Arbitrum Network.',
+    action: 'Swap USDC for ETH tokens from Arbitrum to Arbitrum.',
+  },
+  {
+    title: 'Buy ARB',
+    label: 'on Arbitrum.',
+    action: 'Buy ARB token.',
+  },
+];
+```
 
-The interface allows you to:
+#### 🛠️ Core Capabilities:
 
-1. Set any number
-2. Add numbers
-3. Increment count
-4. Perform multiplications
-5. Track all transactions in the Block Explorer
+- **Token Swaps**: Exchange one token for another
+- **Price Quotes**: Get real-time swap quotes
+- **Slippage Management**: Automatic slippage protection
+- **Route Optimization**: Find the best trading routes
+- **Multi-hop Swaps**: Execute complex multi-step trades
 
-> After that, you can easily view all of your transactions from the Block Explorer Tab
+#### 📊 Action Examples:
 
-![image](https://github.com/user-attachments/assets/48ab1e39-7560-4441-b7dc-2acbdf8cedfe)
-
-💼 Take a quick look at your deploy script `run-dev-node.sh` in `speedrun-rust/packages/stylus-demo/run-dev-node.sh`.
-
-📝 If you want to edit the frontend, navigate to `speedrun-rust/packages/nextjs/app` and open the specific page you want to modify. For instance: `/debug/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
+**Token Swap:**
+![Swapping Transaction](assets/SwappingImg.png)
+_Swapping 1 USDC for ARB on Arbitrum mainnet with transaction details and execution flow_
 
 ---
 
-## Checkpoint 2: 💾 Deploy your contract! 🛰
+### 3. 💧 Liquidity (LPing) Agent (Camelot DEX)
 
-🛰 You don't need to provide any specifications to deploy your contract because contracts are automatically deployed from the `run-dev-node.sh`
+**Port**: `3002` | **Container**: `liquidity-agent-no-wallet`
 
-> You can check that below :
+The Liquidity Agent manages liquidity provision on Camelot DEX, helping users provide liquidity and earn fees from trading pairs.
 
-![image](https://github.com/user-attachments/assets/d84c4d6a-be20-426b-9c68-2c021caefb29)
+#### 🔧 Available Actions:
 
-The above command will automatically deploy the contract functions written inside `speedrun_stylus/packages/stylus-demo/src/lib.rs`
-
-> This local account will deploy your contracts, allowing you to avoid entering a personal private key because the deployment happens using the pre-funded account's private key.
-
-## Checkpoint 3: 🚢 Ship your frontend! 🚁
-
-> We are deploying all the RUST contracts at the `localhost:8547` endpoint where the nitro devnode is spinning up in Docker. You can check the network where your contract has been deployed in the frontend (http://localhost:3000):
-
-![image](https://github.com/user-attachments/assets/bb82e696-97b9-453e-a7c7-19ebb7bd607f)
-
-🚀 Deploy your NextJS App
-
-```bash
-yarn vercel
+```typescript
+suggestedActions: [
+  {
+    title: 'Provide Liquidity',
+    label: 'on Arbitrum.',
+    action: 'Provide Liquidity on Arbitrum.',
+  },
+  {
+    title: 'Check',
+    label: 'Liquidity positions',
+    action: 'Check Positions',
+  },
+];
 ```
 
-> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
+#### 🛠️ Core Capabilities:
 
-> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
+- **Add Liquidity**: Provide tokens to liquidity pools
+- **Remove Liquidity**: Withdraw tokens from pools
+- **Position Management**: Track LP token positions
+- **Yield Calculation**: Monitor earnings from fees
+- **Pool Analytics**: Analyze pool performance and APR
 
-⚠️ Run the automated testing function to make sure your app passes
+#### 📊 Action Examples:
 
-```bash
-yarn test
-```
+**Available Liquidity Pools:**
+![Available Liquidity Pools](assets/LiquidityPositionPoolsImg.png)
+_Available liquidity pools on Arbitrum where users can provide liquidity and earn fees_
+
+**LP Positions:**
+![Liquidity Positions](assets/LiquidityPositionImg.png)
+_User's current liquidity positions showing no active positions in the portfolio_
 
 ---
 
-## Checkpoint 4: 📜 Contract Verification
+## 🔄 Universal Agent Workflow: From Chat to Transaction
 
-You can verify your smart contract by running:
+Let's understand how **all Vibekit agents** work using a lending example: **"Deposit 1 ARB to my balance"**.
 
-```bash
-cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
+### 🏗️ Universal Flow Overview
+
+```mermaid
+graph TB
+    A[💬 User types message] --> B[🌐 Frontend Port 3000]
+    B --> C[🤖 Agent Router]
+    C --> D[🧠 AI processes request]
+    D --> E[🔧 Calls appropriate tool]
+    E --> F[🔗 MCP Server connection]
+    F --> G[⛓️ Blockchain interaction]
+    G --> H[📋 Creates transaction plan]
+    H --> I[💾 Saves to database]
+    I --> J[🖼️ Shows result to user]
 ```
 
-```bash
-cargo stylus deploy -e http://127.0.0.1:8547 --private-key "$your_private_key"
+### 🔍 Step-by-Step Universal Agent Workflow
+
+#### Step 1: 💬 User Input
+
+- User types any DeFi request: **"Deposit 1 ARB"**, **"Swap USDC for ETH"**, **"Provide liquidity"**
+- Frontend identifies the appropriate agent based on user selection
+- Routes to correct agent port: **Lending (3001)**, **Trading (3005)**, **Liquidity (3002)**
+
+#### Step 2: 🤖 Agent Receives Message
+
+The selected agent (`index.ts`) processes the message:
+
+```typescript
+// Agent processes the natural language request
+const taskResponse = await agent.processUserInput(userMessage, userAddress);
 ```
 
-> It is okay if it says your contract is already verified.
+#### Step 3: 🧠 AI Understanding
+
+The agent's AI model (OpenRouter LLM) analyzes the message:
+
+- **Understands user intent**: deposit, swap, provide liquidity, etc.
+- **Determines appropriate tool**: supply, swap, addLiquidity, etc.
+- **Extracts parameters**: `tokenName`, `amount`, and protocol-specific details
+
+#### Step 4: 🔧 Tool Execution
+
+The agent calls the relevant handler (`agentToolHandlers.ts`):
+
+```typescript
+// Different agents call different handlers
+handleSupply(); // Lending Agent
+handleBorrow(); // Lending Agent
+handleWithdraw(); // Lending Agent
+handleRepay(); // Lending Agent
+handleGetUserPositions(); // Lending Agent
+handleGetLiquidityPools(); // Liquidity Agent
+handleGetUserLiquidityPositions(); // Liquidity Agent
+handleSupplyLiquidity(); // Liquidity Agent
+handleWithdrawLiquidity(); // Liquidity Agent
+handleSwapTokens(); // Swapping Agent
+```
+
+Each agent validates:
+
+- ✅ **Token/pair compatibility** with the protocol
+- 🔍 **User's wallet balance** for the operation
+- ❌ **Stops execution** if insufficient funds
+
+#### Step 5: 🔗 MCP Server Communication
+
+Agent connects to Ember AI's MCP server with protocol-specific parameters:
+
+```typescript
+// Different MCP tools for different protocols
+await mcpClient.callTool({
+  name: 'supply', // AAVE lending
+  name: 'swap', // Camelot trading
+  name: 'addLiquidity', // Camelot LP
+  // Common parameters: tokenAddress, chainId, amount, userAddress
+});
+```
+
+#### Step 6: ⛓️ Protocol & Blockchain Interaction
+
+Ember AI's MCP server interacts with the relevant DeFi protocol:
+
+- **Lending Agent**: AAVE protocol rates, health factors, liquidation thresholds
+- **Trading Agent**: Camelot DEX routes, slippage calculations, price impact
+- **Liquidity Agent**: Pool information, LP token calculations, fee structures
+
+#### Step 7: 📋 Response Processing
+
+Agent receives MCP response and builds structured output:
+
+```typescript
+return {
+  status: 'completed',
+  message: 'Transaction plan created. Ready to sign.',
+  artifacts: [{ name: 'transaction-plan', data: protocolSpecificDetails }],
+};
+```
+
+#### Step 8: 💾 Database Storage
+
+Vibekit automatically saves all interactions across agents:
+
+- **Chat messages**: User requests and agent responses
+- **Transaction plans**: Complete transaction data for all protocols
+- **Conversation history**: Cross-agent conversation tracking
+- **Agent artifacts**: Protocol-specific data (AAVE positions, LP tokens, etc.)
+
+#### Step 9: 🖼️ Frontend Display
+
+User receives consistent interface across all agents:
+
+- ✅ **Agent response**: Protocol-specific success message
+- 📊 **Transaction preview**: Relevant details (APY, slippage, fees, etc.)
+- 🖊️ **Action buttons**: "Approve" and "Execute Transaction"
+- 💬 **Updated chat history**: Persistent conversation log
+
+> **🔄 Universal Applicability**: All three agents (Lending, Trading, Liquidity) follow this exact same workflow. The only differences are in the specific tools called, MCP endpoints used, and protocol interactions performed. The core chat-to-transaction flow remains consistent across all DeFi operations.
+
+### 🎯 Key Components Working Together
+
+**🏠 Lending Agent Files:**
+
+- `index.ts` - Server that receives messages
+- `agent.ts` - Main logic and AI processing
+- `agentToolHandlers.ts` - Actual DeFi operations
+- `encyclopedia/` - 200KB+ of AAVE documentation for AI context
+
+**💾 Chat History Management:**
+
+- Every conversation is saved with timestamps
+- Users can view/delete previous chats
+- Transaction plans are stored as artifacts
+- All data persists in PostgreSQL database
+
+### 🚨 Error Handling
+
+If something goes wrong:
+
+- **No balance**: "Insufficient WETH balance"
+- **Network issues**: "Could not verify balance"
+- **MCP errors**: "Failed to create transaction plan"
+- **AI errors**: Falls back to error message
+
+This simple flow shows how Vibekit transforms natural language into blockchain transactions while keeping everything secure and user-friendly! 🚀
+
+### 🔄 Chat History Management
+
+Vibekit provides comprehensive chat history management:
+
+#### 📚 Conversation Storage
+
+```typescript
+// Each conversation is stored with metadata
+interface Conversation {
+  id: string;
+  userId: string;
+  agentId: ChatAgentId;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+  messages: Message[];
+}
+```
+
+#### 🗑️ History Management Features
+
+Users can:
+
+- **View All Conversations**: Browse past interactions with any agent
+- **Delete Conversations**: Remove individual chat sessions
+- **Clear All History**: Wipe all conversations for privacy
+- **Export Conversations**: Download chat history for records
+
+![Chat History Management](assets/VibekitUI2.png)
+_UI showing conversation list with delete/export options for managing chat history_
+
 
 ---
 
-> 🏃 Head to your next challenge [here](https://www.speedrunstylus.com/challenge/simple-nft-example).
+## 🏆 How to Submit Vibekit Projects into Speedrun
+
+🎉 **Congratulations!** You've successfully completed all the Vibekit setup steps and have your DeFi agents running locally!
+
+Now it's time to showcase your achievement and submit your project for review. Follow these final steps to complete your speedrun submission:
+
+### 📤 Submission Process
+
+1. **🔄 Push Your Code**:
+
+   - Ensure all your Vibekit code changes are committed and pushed to your GitHub repository
+   - Make sure your `.env` file is **NOT** included (keep your API keys secure!)
+   - Verify that your repository contains all the necessary files and configurations
+
+2. **✅ Final Verification**:
+
+   - Confirm that your Vibekit UI is running successfully at `http://localhost:3000`
+   - Test that you can interact with at least one agent (lending, liquidity, or swapping)
+   - Ensure all Docker containers are running without errors
+
+3. **🚀 Submit Your Challenge**:
+   - Navigate to the speedrun submission portal
+   - Click on the **"Submit Challenge"** button
+   - Paste your repository URL in the submission field
+   - Add any additional notes about your implementation or customizations
+
+---
+
+## 🚀 Coming Soon: Next-Generation Stylus Agent
+
+### ⚡ Rust-Powered DeFi Agent on Arbitrum Sepolia
+
+🦀 **RUST CONTRACTS** + 🤖 **AI AGENTS** = 🚀 **NEXT-LEVEL DEFI**
+
+We're excited to announce the upcoming integration of **Vibekit's Stylus-based Agent** - a revolutionary DeFi agent that combines the power of Rust smart contracts with AI-driven automation on Arbitrum Sepolia!
+
+### 🎯 Key Features
+
+**🦀 Rust Smart Contracts:**
+- ⚡ **Ultra-Fast Execution**: Near-native speed with Stylus
+- 🔒 **Memory Safety**: Rust's ownership model ensures security  
+- 💰 **Gas Optimization**: Up to 10x cheaper than Solidity
+
+**🤖 Agent Flow:**
+```
+graph LR
+    subgraph "🦀 Stylus Layer"
+        A[Rust Smart Contracts]
+        B[Memory-Safe Execution]
+        C[Gas-Optimized Logic]
+    end
+    
+    subgraph "🤖 AI Agent Layer"
+        D[Natural Language Processing]
+        E[Transaction Optimization]
+        F[Risk Assessment]
+    end
+    
+    subgraph "⛓️ Arbitrum Sepolia"
+        G[Lightning Fast Txns]
+        H[Low Gas Costs]
+        I[Ethereum Security]
+    end
+    
+    A --> D
+    B --> E
+    C --> F
+    D --> G
+    E --> H
+    F --> I
+    
+    style A 
+    style D 
+    style G 
+```
+
+### 🔥 Performance Comparison
+
+| Feature | Traditional Solidity | 🦀 **Stylus + AI** |
+|---------|---------------------|-------------------|
+| **Execution Speed** | ~13ms per operation | ⚡ **~1ms per operation** |
+| **Gas Efficiency** | Standard costs | 💰 **Up to 10x cheaper** |
+| **Memory Safety** | Runtime errors possible | 🔒 **Compile-time guarantees** |
+
+### 🔔 Stay Updated
+
+⭐ **Star this repository** to get notified when the Stylus Agent launches on Arbitrum Sepolia!
+
+> **🦀 Fun Fact**: Stylus contracts execute up to **10x faster** than traditional Solidity while maintaining full EVM compatibility!
+
+---
+
+## 📚 Complete Architecture Documentation
+
+### 🔍 Deep Dive into Vibekit's Complete System
+
+For users who want to understand the complete end-to-end architecture of Vibekit, including:
+
+- 🏗️ **Complete Agent Architecture**: Detailed breakdown of all agent components and interactions
+- 📡 **MCP Server Implementation**: How Model Context Protocol servers are structured and communicate
+- 🤖 **AI Model Integration**: How LLMs process user requests and orchestrate multi-step operations
+- 🔄 **Request Processing Flow**: Complete user-to-blockchain transaction lifecycle
+- 🛠️ **Tool & Skill Framework**: Advanced patterns for building custom agents
+- ⛓️ **Blockchain Integration**: Low-level protocol interactions and transaction management
+- 🔐 **Security & Error Handling**: Comprehensive safety mechanisms and recovery strategies
+
+Visit the complete repository documentation at: **[Vibekit Architecture Deep Dive](https://deepwiki.com/EmberAGI/arbitrum-vibekit)**
+
+This comprehensive resource contains:
+- 📖 **[Overview & Getting Started](https://deepwiki.com/EmberAGI/arbitrum-vibekit/1-overview)** - Complete system overview and setup
+- 🤖 **[AI Agents Detailed Guide](https://deepwiki.com/EmberAGI/arbitrum-vibekit/4-ai-agents)** - In-depth agent implementation details
+- 🏗️ **Architecture Patterns** - Advanced design patterns and best practices
+- 🔧 **Implementation Examples** - Real-world code examples and tutorials
+
+> 💡 **Pro Tip**: The DeepWiki documentation provides interactive code examples and detailed explanations that complement vibekit agents workflow perfectly!
+
+---
+
+_Thank you for completing the Vibekit speedrun challenges! Your contribution helps build the future of DeFi automation._ 💫
