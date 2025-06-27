@@ -168,15 +168,33 @@ Replace `google/gemini-2.5-pro-preview` with your chosen free model everywhere i
 google/gemma-3n-e4b-it:free → May cause errors in Vibekit
 ```
 
-#### ✅ Battle-Tested Free Models
+#### ✅ Battle-Tested Free Models with Tool Support
 
-These models work great with Vibekit! 🎯
+**⚠️ IMPORTANT**: Vibekit requires models that support **tool calling** for MCP integration! Some free models don't support tools, you can check it from OpenRouter Dashboard under supported parameters where you have to tickmark the first option tools to filter out models which support tool-support.
 
+❌ **These free models DON'T support tools** (avoid these):
 ```
 meta-llama/llama-4-scout:free
-meta-llama/llama-4-maverick:free
+meta-llama/llama-4-maverick:free  
 meta-llama/llama-3.3-70b-instruct:free
 ```
+
+✅ **These free models DO support tools** (recommended):
+```
+deepseek/deepseek-chat-v3-0324:free
+```
+
+🔍 **How to Find Tool-Supporting Models**:
+1. Visit [OpenRouter Models](https://openrouter.ai/models)
+2. From the left panel, filter by:
+   - **Prompt Pricing**: Select "FREE" 
+   - **Supported Parameters**: Check the "Tools" option ✅
+3. This shows only free models that support tool calling!
+
+**📸 Visual Guide - Tool Support Filter:**
+![OpenRouter Tool Support Filter](assets/DockerToolSupport.png)
+
+> 💡 **Pro Tip**: Always verify the "Tools" checkbox is selected to ensure compatibility with Vibekit's MCP integration!
 
 #### 🧪 Test Before You Deploy
 
@@ -235,29 +253,6 @@ If you previously ran `docker compose up` with an older version and encounter er
    docker compose down && docker volume rm typescript_db_data && docker compose build web --no-cache && docker compose up
    ```
 
-#### 3. Environment Variables Not Loading
-
-Make sure your `.env` file is properly configured:
-
-- Check that the file is named exactly `.env` (not `.env.txt`)
-- Ensure all required API keys are populated
-- Restart the Docker containers after making changes
-
-#### 4. Frontend Changes Not Reflecting
-
-If you've made frontend changes and restarted Docker containers but don't see the updates:
-
-- **Important**: You must clear your browser cache before restarting containers for frontend changes to take effect
-- Frontend changes require cache clearing to take effect after container restart
-
-#### 5. Port Already in Use
-
-If port 3000 is already in use:
-
-- Stop any other applications using port 3000
-- Or modify the port in the Docker configuration
-
----
 
 ## 💫 Checkpoint 1: Frontend Magic
 
@@ -279,8 +274,6 @@ The interface allows you to:
 4. Monitor transaction history
 5. View agent reasoning and decision-making process
 
-## 💼 Take a quick look at the frontend code in `typescript/clients/web/app` to understand the structure.
-
 ## Checkpoint 2: 🤖 Agents Overview
 
 🤖 Vibekit comes with several pre-built agents that are automatically started:
@@ -288,8 +281,206 @@ The interface allows you to:
 > **Lending Agent**: Handles borrowing and lending operations on Aave
 > **Liquidity Agent**: Manages liquidity provision on various DEXs
 > **Swapping Agent**: Executes token swaps across different protocols
+> **Counter Agent**: Interacts with Arbitrum Stylus smart contracts written in Rust
 
 Each agent runs as a separate service in Docker and communicates using the MCP protocol.
+
+---
+
+## 🦀 Checkpoint 2.1: Counter Agent - Rust Smart Contract Integration
+
+🚀 **Introducing the Counter Agent**: Our newest addition that showcases the power of **Arbitrum Stylus** - enabling smart contracts written in **Rust** on Arbitrum!
+
+### 🎯 What is the Counter Agent?
+
+The Counter Agent demonstrates seamless interaction with Rust-based smart contracts deployed on **Arbitrum Sepolia** using the revolutionary **Stylus** technology. This agent bridges the gap between AI-powered interactions and high-performance Rust smart contracts.
+
+### ⚡ Available Functions
+
+The Counter Agent can interact with the following smart contract functions:
+
+```solidity
+    function number() external view returns (uint256),
+    function setNumber(uint256 new_number) external,
+    function mulNumber(uint256 new_number) external,
+    function addNumber(uint256 new_number) external,
+    function increment() external,
+    function addFromMsgValue() external payable,
+```
+
+### 🎮 What You Can Do
+
+Through natural language commands, you can:
+
+- **📊 Get Counter Value**: "What is the current counter value?"
+- **🔢 Set Specific Value**: "Set the counter to 42"
+- **⬆️ Increment**: "Increment the counter by 1"
+- **✖️ Multiply**: "Multiply the counter by 3"
+- **➕ Add Values**: "Add 25 to the counter"
+- **💰 Send ETH**: "Send 0.001 ETH to add to the counter"
+
+### 🖼️ Counter Agent in Action
+
+Here are some examples of interacting with the Counter Agent through Vibekit's beautiful UI:
+
+**📊 Checking Current Counter Value:**
+![Check Counter Value](assets/NumCheck.png)
+
+**🔢 Setting Counter to Specific Value:**
+![Set Counter Value](assets/SetVal.png)
+
+**➕ Adding Numbers to Counter:**
+![Add Numbers to Counter](assets/AddNum.png)
+
+**✅ Updated Counter Value Confirmation:**
+![Updated Counter Value](assets/UpdatedVal.png)
+
+### 🔍 Blockchain Verification on Arbiscan
+
+All Counter Agent transactions are verifiable on Arbitrum Sepolia blockchain:
+
+**📋 Contract Details on Arbiscan:**
+![Arbiscan Contract View](assets/ArbScan1.png)
+
+**📊 Transaction History and Proof:**
+![Arbiscan Transaction Proof](assets/ArtScan2.png)
+
+> 🔗 **Live Contract**: View our deployed Counter contract at `0x436024c7166956b95820989db24cdebe0ba0fc43` on [Arbitrum Sepolia Explorer](https://sepolia.arbiscan.io/)
+
+---
+
+## 🛠️ Create Your Own Rust Smart Contracts with Stylus
+
+**🎯 Two Options Available:**
+
+### Option 1: 🚀 Quick Start - Use Our Deployed Contract
+**Just want to interact with the existing Counter contract?** Simply add this to your `.env` file:
+
+```bash
+COUNTER_CONTRACT_ADDRESS=0x436024c7166956b95820989db24cdebe0ba0fc43
+```
+
+Then restart your Docker containers and start chatting with the Counter Agent! No deployment needed. ✨
+
+---
+
+### Option 2: 🛠️ Build Your Own Contract
+Want to build your own Rust-powered smart contracts and integrate them with Vibekit? Here's your complete guide!
+
+
+### 🚀 Stylus Development Workflow
+
+**Step 1: Install Cargo Stylus**
+```bash
+# Install the Stylus CLI toolkit
+cargo install --force cargo-stylus
+
+# Add WebAssembly build target
+rustup default 1.80
+rustup target add wasm32-unknown-unknown --toolchain 1.80
+
+# Verify installation
+cargo stylus --help
+```
+
+**Step 2: Create Your Rust Smart Contract**
+```bash
+# Create a new Stylus project
+cargo stylus new my-rust-contract
+cd my-rust-contract
+```
+
+This generates a Rust implementation of a Counter contract similar to this Solidity version, complete RUST contract you can see at ```lib.rs``` file:
+```solidity
+contract Counter {
+    uint count;
+    
+    function setCount() public {
+        count = count + 1;
+    }
+    
+    function getCount() view public returns(uint) {
+        return count;
+    }
+}
+```
+
+**Step 3: Validate Your Contract**
+```bash
+# Check if your contract can be deployed (requires Docker)
+cargo stylus check
+```
+
+**Success Output:**
+```
+✅ Program succeeded Stylus onchain activation checks with Stylus version: 1
+📦 Compressed WASM size: 3 KB
+```
+
+**Step 4: Deploy Your Contract**
+```bash
+# Estimate deployment gas
+cargo stylus deploy \
+  --endpoint='https://sepolia-rollup.arbitrum.io/rpc' \
+  --private-key="0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659" \
+  --estimate-gas
+
+# Deploy to arbitrum sepolia  
+cargo stylus deploy \
+  --endpoint='https://sepolia-rollup.arbitrum.io/rpc' \
+  --private-key="0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659"
+```
+
+**Success Output:**
+```
+🎉 deployed code at address: 0x33f54de59419570a9442e788f5dd5cf635b3c7ac
+📝 deployment tx hash: 0xa55efc05c45efc63647dff5cc37ad328a47ba5555009d92ad4e297bf4864de36
+✅ wasm already activated!
+```
+
+**Step 5: Export Contract ABI**
+```bash
+# Generate Solidity ABI interface for your Rust contract
+cargo stylus export-abi
+```
+
+**Output Example:**
+```solidity
+// SPDX-License-Identifier: MIT-OR-APACHE-2.0
+pragma solidity ^0.8.23;
+
+interface ICounter {
+    function number() external view returns (uint256),
+    function setNumber(uint256 new_number) external,
+    function mulNumber(uint256 new_number) external,
+    function addNumber(uint256 new_number) external,
+    function increment() external,
+    function addFromMsgValue() external payable,
+}
+```
+
+### 🔗 Integration with Vibekit
+
+Once you have your Rust smart contract deployed:
+
+1. **📋 Save the Contract Address**: From the deployment output
+2. **📄 Export the ABI**: Use `cargo stylus export-abi` 
+3. **⚙️ Update Environment Variable**: Add your deployed contract address to `.env` file:
+   ```bash
+   COUNTER_CONTRACT_ADDRESS=your_deployed_contract_address_here
+   ```
+4. **🔄 Restart Services**: Run `docker compose down && docker compose up` to apply changes
+5. **🔧 Create Agent Tools**: Integrate with Vibekit MCP tools (if creating custom agent)
+6. **🤖 Configure Agent**: Add to your agent configuration (if creating custom agent)
+7. **🎮 Test Interaction**: Use natural language to interact with your contract through the Counter Agent
+
+### 📚 Learn More
+
+- **📖 Official Docs**: [Arbitrum Stylus Documentation](https://docs.arbitrum.io/stylus/quickstart)
+- **🔧 Rust SDK**: [Stylus Rust SDK Reference](https://github.com/OffchainLabs/stylus-sdk-rs)
+- **💡 Examples**: Explore `arbitrum-vibekit/examples/counter-agent-no-wallet/`
+
+---
 
 ## Checkpoint 3: 🚢 Interact with Agents
 
