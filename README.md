@@ -390,6 +390,7 @@ cargo stylus new my-rust-contract
 cd my-rust-contract
 ```
 
+
 This generates a Rust implementation of a Counter contract similar to this Solidity version, complete RUST contract you can see at ```lib.rs``` file:
 ```solidity
 contract Counter {
