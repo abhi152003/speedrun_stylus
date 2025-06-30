@@ -193,7 +193,7 @@ deepseek/deepseek-chat-v3-0324:free
 3. This shows only free models that support tool calling!
 
 **📸 Visual Guide - Tool Support Filter:**
-![OpenRouter Tool Support Filter](assets/DockerToolSupport.png)
+![OpenRouter Tool Support Filter](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-setup/assets/DockerToolSupport.png)
 
 > 💡 **Pro Tip**: Always verify the "Tools" checkbox is selected to ensure compatibility with Vibekit's MCP integration!
 
