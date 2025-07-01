@@ -1,409 +1,354 @@
-# 🚩 Challenge #0: 🎟 Simple Counter Example
+# 🚀 Challenge #13: Deep Dive into Vibekit's Advanced Agents
 
-🎫 Create a simple Counter:
+🎯 **Objective**: Master the advanced agents in Vibekit: AI-powered price predictions, yield tokenization, and workflow optimization through the Model Context Protocol (MCP) architecture.
 
-👷‍♀️ You'll compile and deploy your first smart contracts. Then, you'll use a template React app full of important components and hooks. Finally, you'll deploy a Counter contract written in RUST to a public network to share with friends! 🚀
+📊 **Difficulty Level**: Medium to Advanced
 
-🌟 The final deliverable is an app that lets users interact with the counter contract. Deploy your contracts to a testnet, then build and upload your app to a public web server.
+🌟 **Challenge Goal**: By the end of this challenge, you'll have a comprehensive understanding of how Vibekit's next-generation agents operate, communicate via MCP, and execute complex AI workflows, prediction markets, and yield strategies.
 
-## Checkpoint 0: 📦 Prerequisites 📚
+## ⚙️ Vibekit Agent Architecture Overview
 
-Before starting, ensure you have the following installed:
+Vibekit implements a sophisticated multi-agent system where each agent specializes in specific AI-driven operations. The system follows a clean separation of concerns with each agent running as an independent microservice, all orchestrated through Docker containers and unified via the MCP (Model Context Protocol).
 
-- [Node.js (>= v18.17)](https://nodejs.org/en/download/)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
-- [Git](https://git-scm.com/downloads)
-- [WSL (for Windows users)](https://www.geeksforgeeks.org/how-to-install-wsl2-windows-subsystem-for-linux-2-on-windows-10/)
-- [Docker](https://docs.docker.com/get-docker/)
-- [Curl](https://gcore.com/learning/how-to-install-curl-on-ubuntu)
-- [Rust](https://rustup.rs/) (including `rustc`, `rustup`, and `cargo`) - Install with (⚠️ **Must use WSL terminal to run these commands**):
+### 🔧 Docker Service Architecture
 
-  ```bash
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  ```
+When you run `docker compose up`, Vibekit starts the following advanced services:
 
-  ```bash
-  source ~/.bashrc  # or restart your terminal
-  ```
-
-- cargo-stylus  
-  -> Install cargo-stylus with the below command:
-
-  ```bash
-  cargo install cargo-stylus
-  ```
-
-    > ⚠️ **Note for Ubuntu users**: If you face issues related to pkg-config while trying to install cargo-stylus, run these commands:
-  ```bash
-  sudo apt update
-  sudo apt install pkg-config
-  sudo apt install libssl-dev
-  sudo apt install build-essential
-  ```
-
-
-- [Foundry](https://getfoundry.sh/introduction/installation/) - Required for smart contract development
-
-### Foundry Installation Steps:
-
-#### 1. Open your WSL terminal.
-
-#### 2. Install Foundry using the official install script:
-```bash
-curl -L https://foundry.paradigm.xyz | bash
+```yaml
+📊 Service Overview:
+├── 🌐 Web Frontend (Port 3000)
+├── 🗄️  PostgreSQL Database (Internal)
+├── 📈 Allora Price Prediction Agent (Port 3008)
+├── 💰 Pendle Yield Agent (Port 3003)
+└── 🔄 LangGraph Workflow Agent (Port 3009)
 ```
 
-#### 3. Add Foundry to your shell profile
-
-After installation, you'll see instructions to add Foundry to your shell profile (like .bashrc or .zshrc). Usually, you can do:
-
-```bash
-export PATH="$HOME/.foundry/bin:$PATH"
-```
-
-Add the above line to your ~/.bashrc or ~/.zshrc file, then reload your shell:
-
-```bash
-source ~/.bashrc
-```
-
-```bash
-source ~/.zshrc
-```
-
-#### 4. Install Foundry binaries
-
-```bash
-foundryup
-```
 
 ---
 
-### 🔧 Version Requirements
+## 🏗️ Vibekit Advanced Agent Architecture Deep Dive
 
-Ensure your tools are ready to use:
+### 🔑 Key Architectural Principles
 
-#### Check your versions - ⚠️ **Must use WSL terminal to run these commands**
+**🤖 AI-First Design**: Each agent leverages advanced AI models for natural language processing, prediction, and optimization workflows.
 
-```bash
-cargo stylus --version
-```
+**📊 Data-Driven Operations**: Agents process real-time market data, prediction algorithms, and yield calculations through specialized MCP servers.
 
-```bash
-cargo --version
-```
+**🔄 Workflow Orchestration**: Advanced agents support complex multi-step workflows with conditional logic and iterative optimization.
 
-```bash
-rustup --version
-```
+**🧠 LLM Orchestration**: AI models handle intent routing, sequential execution, conditional logic, error recovery, and complex decision-making across all operations.
 
-```bash
-rustc --version
-```
+**🔧 Skill-Tool Separation**:
 
-```bash
-curl --version
-```
+- **Skills** = External interface (what users see)
+- **Tools** = Internal implementation (how operations execute)
+- **Workflows** = Multi-step processes with state management
 
-```bash
-cast --version
-```
-
-```bash
-forge --version
-```
-
-
-### 🚩 Challenge Setup Instructions
-
-#### For Ubuntu/Mac Users:
-
-1. Open your terminal.
-2. Clone the repository:
-
-   ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git speedrun_stylus_counter
-   ```
-
-   ```bash
-   cd speedrun_stylus_counter
-   ```
-
-   ```bash
-   yarn install
-   ```
-
-3. Start the local devnode in Docker:
-
-   ```bash
-   cd packages/stylus-demo
-   ```
-
-   ```bash
-   bash run-dev-node.sh
-   ```
-
-4. In a second terminal window, start your frontend:
-
-   ```bash
-   cd speedrun_stylus_counter/packages/nextjs
-   ```
-
-   ```bash
-   yarn run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### ⚠️ Important: Contract Address Setup
-
-After running the devnode script, **copy the contract address** from the bash terminal output. You will need to paste this address into the `contractAddress` variable in the `DebugContract` component.
-
-> 💡 **Note**: If both contract addresses are the same, you don't need to do anything - you're ready to go and interact with the stylus-based smart contracts written in RUST!
-
-![DockerImg](https://github.com/user-attachments/assets/04159bef-cc35-442f-b67a-5e8f7033db43)
-
-<p align="center"><em>Docker_Img</em></p>
-
-#### For Windows Users (Using WSL):
-
-> 📝 **Note**: After completing step 4 below, make sure to follow the "Contract Address Setup" section above for configuring your contract address.
-
-1. Open your WSL terminal.
-2. Ensure you have set your Git username and email globally:
-
-   ```bash
-   git config --global user.name "Your Name"
-   ```
-
-   ```bash
-   git config --global user.email "your.email@example.com"
-   ```
-
-3. Clone the repository:
-
-   ```bash
-   git clone -b counter https://github.com/abhi152003/speedrun_stylus.git
-   ```
-
-   ```bash
-   cd speedrun_stylus
-   ```
-
-   ```bash
-   yarn install
-   ```
-
-
-4. Start the local devnode in Docker:
-
-   ```bash
-   cd packages/stylus-demo
-   ```
-
-   ```bash
-   bash run-dev-node.sh
-   ```
-
-5. In a second WSL terminal window, start your frontend:
-
-   ```bash
-   cd speedrun_stylus/packages/nextjs
-   ```
-
-   ```bash
-   yarn run dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### 🛠️ Troubleshooting Common Issues
-
-#### 1. `stylus` Not Recognized
-
-If you encounter an error stating that `stylus` is not recognized as an external or internal command, run the following command in your terminal:
-
-```bash
-sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
-```
-
-After that, check if `stylus` is installed by running:
-
-```bash
-cargo stylus --version
-```
-
-If the version is displayed, `stylus` has been successfully installed and the path is correctly set.
-
-#### 2. ABI Not Generated
-
-If you face issues with the ABI not being generated, you can try one of the following solutions:
-
-- **Restart Docker Node**: Pause and restart the Docker node and the local setup of the project. You can do this by deleting all ongoing running containers and then restarting the local terminal using:
-  ```bash
-  yarn run dev
-  ```
-- **Modify the Script**: In the `run-dev-node.sh` script, replace the line:
-
-  ```bash
-  cargo stylus export-abi
-  ```
-
-  with:
-
-  ```bash
-  cargo run --manifest-path=Cargo.toml --features export-abi
-  ```
-
-- **Access Denied Issue**: If you encounter an access denied permission error during ABI generation, run the following command and then execute the script again:
-  ```bash
-  sudo chown -R $USER:$USER target
-  ```
-
-#### 3. 🚨 Fixing Line Endings and Running Shell Scripts in WSL
-
-> ⚠️ This guide provides step-by-step instructions to resolve the Command not found error caused by CRLF line endings in shell scripts when running in a WSL environment.
-
-Shell scripts created in Windows often have `CRLF` line endings, which cause issues in Unix-like environments such as WSL. To fix this:
-
-**Using `dos2unix`:**
-
-1. Install `dos2unix` (if not already installed):
-
-   ```bash
-   sudo apt install dos2unix
-   ```
-
-2. Convert the script's line endings:
-
-   ```bash
-   dos2unix run-dev-node.sh
-   ```
-
-3. Make the Script Executable:
-
-   ```bash
-   chmod +x run-dev-node.sh
-   ```
-
-4. Run the Script in WSL:
-   ```bash
-   bash run-dev-node.sh
-   ```
+**🔌 MCP Integration**: Universal protocol for connecting agents to AI services, prediction markets, and yield protocols.
 
 ---
 
-## 🚀 Submitting Your Challenge
+## 🎯 Three Advanced Vibekit Agents
 
-After you have completed the setup and are ready to submit your solution, follow these steps:
+### 1. 📈 Allora Price Prediction Agent
 
-1. **Create a New GitHub Repository**
-   - Go to [GitHub](https://github.com/) and create a new repository (public or private as required by the challenge).
+**Port**: `3008` | **Container**: `allora-price-prediction-agent`
 
-2. **Set Your Local Repository's Remote URL**
-   - In your project directory, update the remote URL to your new repository:
-     ```bash
-     git remote set-url origin https://github.com/yourusername/your-repo.git
-     ```
+The Allora Price Prediction Agent leverages decentralized prediction markets to provide AI-powered price forecasts for cryptocurrency tokens using Allora's machine learning inference network.
 
-3. **Push Your Code to GitHub**
-   - Add and commit any changes if you haven't already:
-     ```bash
-     git add .
-     git commit -m "Initial commit for challenge submission"
-     ```
-   - Push your code:
-     ```bash
-     git push -u origin counter
-     ```
+#### 🎯 Available Actions:
 
-4. **Submit Your Challenge**
-   - Copy your repository link in the following format (without `.git` at the end):
-     ```
-     https://github.com/yourusername/your-repo
-     ```
-   - Use this link to submit your challenge as instructed.
+```typescript
+suggestedActions: [
+  {
+    title: "Get BTC",
+    label: "price prediction",
+    action: "What is the price prediction for BTC?",
+  },
+  {
+    title: "Get ETH",
+    label: "price prediction",
+    action: "What is the price prediction for ETH?",
+  },
+  {
+    title: "Compare BTC and ETH",
+    label: "predictions",
+    action: "Get price predictions for both BTC and ETH",
+  },
+];
+```
+
+#### ⚡️ Core Capabilities:
+
+- **Price Predictions**: Get AI-powered price forecasts for major cryptocurrencies
+- **Topic Discovery**: Automatically discover relevant prediction market topics
+- **Multi-Timeframe Analysis**: Support for different prediction timeframes
+- **Market Intelligence**: Access to Allora's decentralized ML inference network
+- **Real-time Data**: Live prediction market data and confidence intervals
+
+#### 🔧 Technical Architecture:
+
+```typescript
+// Skill Definition
+export const pricePredictionSkill = defineSkill({
+  id: "predict-price",
+  name: "Predict Price",
+  description:
+    "Get price predictions for a given token from Allora prediction markets",
+  tags: ["prediction", "price", "market-data", "allora"],
+  tools: [getPricePredictionTool],
+  mcpServers: [
+    {
+      moduleName: "@alloralabs/mcp-server",
+      env: { ALLORA_API_KEY: process.env.ALLORA_API_KEY },
+    },
+  ],
+});
+```
+
+#### 🎨 Action Examples:
+
+**Price Prediction Query:**
+![Allora Price Prediction](assets/AlloraBTCPrediction.png)
+_BTC price prediction transaction from the Allora agent_
+
+**Market Analysis:**
+![Allora Market Data](assets/AlloraETHPrediction.png)
+_ETH price prediction transaction from the Allora agent_
+
+#### 🔍 Workflow Process:
+
+1. **Topic Discovery**: AI automatically finds relevant prediction topics
+2. **Data Retrieval**: Connects to Allora MCP server for inference data
+3. **Analysis Processing**: Processes ML predictions and confidence intervals
+4. **Result Formatting**: Presents human-readable forecasts with context
 
 ---
 
-## 💫 Checkpoint 1: Frontend Magic
+### 2. 💰 Pendle Yield Tokenization Agent
 
-> ⛽ You'll be redirected to the below page after you complete checkpoint 0
+**Port**: `3003` | **Container**: `pendle-agent`
 
-![image](https://github.com/user-attachments/assets/e4b8dc4a-f304-43ef-8817-ae6d028beea4)
+The Pendle Agent specializes in yield tokenization strategies, enabling users to split yield-bearing assets into Principal Tokens (PT) and Yield Tokens (YT) for advanced yield farming and trading strategies.
 
-> Then you have to click on the debug contracts to start interacting with your contract. Click on "Debug Contracts" from the Navbar or from the Debug Contracts Div placed in the middle of the screen
+#### 🎯 Available Actions:
 
-![image](https://github.com/user-attachments/assets/11197d34-bb2a-4ab7-8f06-3ff2dfabb67a)
+```typescript
+suggestedActions: [
+  {
+    title: "Deposit WETH",
+    label: "to my balance",
+    action: "Deposit WETH to my balance",
+  },
+  {
+    title: "Check",
+    label: "balance",
+    action: "Check balance",
+  },
+];
+```
 
-The interface allows you to:
+#### ⚡️ Core Capabilities:
 
-1. Set any number
-2. Add numbers
-3. Increment count
-4. Perform multiplications
-5. Track all transactions in the Block Explorer
+- **Yield Tokenization**: Split yield-bearing assets into PT and YT tokens
+- **Market Discovery**: Find optimal yield markets across multiple chains
+- **Swap Operations**: Exchange between underlying assets, PT, and YT tokens
+- **Portfolio Analysis**: Track yield positions and performance metrics
 
-> After that, you can easily view all of your transactions from the Block Explorer Tab
+#### 🔧 Technical Architecture:
 
-![image](https://github.com/user-attachments/assets/48ab1e39-7560-4441-b7dc-2acbdf8cedfe)
+```typescript
+// Agent Tool Handler Example
+export async function handleSwapTokens(
+  params: SwapTokensArgs,
+  context: HandlerContext
+): Promise<Task> {
+  // Multi-chain token resolution
+  const fromTokenResult = findTokenDetail(
+    fromToken,
+    effectiveChainName,
+    context.tokenMap
+  );
+  const toTokenResult = findTokenDetail(
+    toToken,
+    toTokenChainName,
+    context.tokenMap
+  );
 
-💼 Take a quick look at your deploy script `run-dev-node.sh` in `speedrun-rust/packages/stylus-demo/run-dev-node.sh`.
+  // Pendle-specific swap execution
+  const swapParamsForMcp: SwapTokensParams = {
+    fromTokenAddress: fromTokenResult.address,
+    fromTokenChainId: fromTokenResult.chainId,
+    toTokenAddress: toTokenResult.address,
+    // ... additional Pendle parameters
+  };
+}
+```
 
-📝 If you want to edit the frontend, navigate to `speedrun-rust/packages/nextjs/app` and open the specific page you want to modify. For instance: `/debug/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
+#### 🎨 Action Examples:
+
+**Yield Market Discovery:**
+![Pendle Markets](assets/PendlePools.png)
+_Available Pendle pools transaction view_
+
+**Token Swap Execution:**
+![Pendle Swap](assets/PendleTx1.png)
+_Pendle transaction example #1_
+
+**Portfolio Overview:**
+![Pendle Portfolio](assets/PendleTx2.png)
+_Pendle transaction example #2_
+
+#### 🔍 Key Features:
+
+- **Multi-Chain Token Support**: Automatic chain detection and token mapping
+- **Yield Optimization**: Smart routing for optimal yield strategies
+- **Risk Management**: Built-in slippage protection and validation
+- **Real-time Markets**: Live yield market data and APY calculations
 
 ---
 
-## Checkpoint 2: 💾 Deploy your contract! 🛰
+### 3. 🔄 LangGraph Workflow Agent
 
-🛰 You don't need to provide any specifications to deploy your contract because contracts are automatically deployed from the `run-dev-node.sh`
+**Port**: `3009` | **Container**: `langgraph-workflow-agent`
 
-> You can check that below :
+The LangGraph Workflow Agent demonstrates advanced AI workflow orchestration using LangGraph's state management system. It showcases iterative optimization processes with evaluator-optimizer patterns.
 
-![image](https://github.com/user-attachments/assets/d84c4d6a-be20-426b-9c68-2c021caefb29)
+#### 🎯 Available Actions:
 
-The above command will automatically deploy the contract functions written inside `speedrun_stylus/packages/stylus-demo/src/lib.rs`
-
-> This local account will deploy your contracts, allowing you to avoid entering a personal private key because the deployment happens using the pre-funded account's private key.
-
-## Checkpoint 3: 🚢 Ship your frontend! 🚁
-
-> We are deploying all the RUST contracts at the `localhost:8547` endpoint where the nitro devnode is spinning up in Docker. You can check the network where your contract has been deployed in the frontend (http://localhost:3000):
-
-![image](https://github.com/user-attachments/assets/bb82e696-97b9-453e-a7c7-19ebb7bd607f)
-
-🚀 Deploy your NextJS App
-
-```bash
-yarn vercel
+```typescript
+suggestedActions: [
+  {
+    title: "Optimize",
+    label: "hello",
+    action: "Optimize: hello",
+  },
+  {
+    title: "Make",
+    label: "hi better",
+    action: "Make this greeting better: hi",
+  },
+  {
+    title: "Improve",
+    label: "good morning",
+    action: "Optimize: good morning",
+  },
+];
 ```
 
-> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
+#### ⚡️ Core Capabilities:
 
-> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
+- **Iterative Optimization**: Multi-step workflow with state management
+- **AI Evaluation**: Automated quality assessment with satisfaction metrics
+- **Conditional Logic**: Smart termination based on satisfaction thresholds
+- **Workflow Visualization**: Complete process history and decision tracking
+- **State Persistence**: Maintains workflow state across iterations
 
-⚠️ Run the automated testing function to make sure your app passes
+#### 🎨 Workflow Process:
 
-```bash
-yarn test
-```
+1. **Generator Node**: Creates initial or improved greeting based on input
+2. **Evaluator Node**: Assesses greeting quality across multiple criteria
+3. **Optimizer Node**: Provides specific feedback for improvement
+4. **Conditional Logic**: Determines whether to continue or terminate
+5. **State Management**: Tracks progress and maintains workflow history
+
+#### 🔍 Advanced Features:
+
+- **Multi-Criteria Evaluation**: Friendliness, engagement, and personalization metrics
+- **Iterative Refinement**: Up to 3 optimization cycles
+- **Satisfaction Tracking**: Continuous quality assessment
+- **Complete Audit Trail**: Full workflow history with decision points
 
 ---
 
-## Checkpoint 4: 📜 Contract Verification
 
-You can verify your smart contract by running:
+### 🔧 Key Advanced Components
 
-```bash
-cargo stylus verify -e http://127.0.0.1:8547 --deployment-tx "$deployment_tx"
-```
+**📈 Allora Agent Files:**
 
-```bash
-cargo stylus deploy -e http://127.0.0.1:8547 --private-key "$your_private_key"
-```
+- `index.ts` - MCP server with AI model configuration
+- `skills/pricePrediction.ts` - Skill definition with ML capabilities
+- `tools/getPricePrediction.ts` - AI prediction tool with hooks
+- `hooks/pricePredictionHooks.ts` - Topic discovery and response formatting
 
-> It is okay if it says your contract is already verified.
+**🔄 LangGraph Agent Files:**
+
+- `index.ts` - Agent with workflow orchestration
+- `skills/greeting-optimizer.ts` - Workflow skill definition
+- `tools/optimize-greeting.ts` - LangGraph workflow execution
+- `workflow/` - Complete state management and node definitions
+
+**💰 Pendle Agent Files:**
+
+- `index.ts` - MCP server with yield market integration
+- `agent.ts` - Main agent with token mapping and market discovery
+- `agentToolHandlers.ts` - Yield tokenization operations
+- Multi-chain support with automatic token resolution
+
+### 🎯 Advanced Error Handling
+
+Sophisticated error recovery mechanisms:
+
+- **AI Model Failures**: Automatic fallback to alternative models
+- **Prediction Timeouts**: Graceful degradation with cached results
+- **Workflow Interruptions**: State preservation and recovery
+- **Market Data Issues**: Real-time validation and error correction
 
 ---
 
-> 🏃 Head to your next challenge [here](https://www.speedrunstylus.com/challenge/simple-nft-example).
+## 🚀 Coming Soon: Next-Generation Stylus Agent
+
+### ⚡ Rust-Powered DeFi Agent on Arbitrum Sepolia
+
+🦀 **RUST CONTRACTS** + 🤖 **AI AGENTS** = 🚀 **NEXT-LEVEL DEFI**
+
+We're excited to announce the upcoming integration of **Vibekit's Stylus-based Agent** - a revolutionary DeFi agent that combines the power of Rust smart contracts with AI-driven automation on Arbitrum Sepolia!
+
+### 🎯 Key Features
+
+**🦀 Rust Smart Contracts:**
+- ⚡ **Ultra-Fast Execution**: Near-native speed with Stylus
+- 🔒 **Memory Safety**: Rust's ownership model ensures security  
+- 💰 **Gas Optimization**: Up to 10x cheaper than Solidity
+
+
+
+### 🔥 Performance Comparison
+
+| Feature | Traditional Solidity | 🦀 **Stylus + AI** |
+|---------|---------------------|-------------------|
+| **Execution Speed** | ~13ms per operation | ⚡ **~1ms per operation** |
+| **Gas Efficiency** | Standard costs | 💰 **Up to 10x cheaper** |
+| **Memory Safety** | Runtime errors possible | 🔒 **Compile-time guarantees** |
+
+### 🔔 Stay Updated
+
+⭐ **Star this repository** to get notified when the Stylus Agent launches on Arbitrum Sepolia!
+
+> **🦀 Fun Fact**: Stylus contracts execute up to **10x faster** than traditional Solidity while maintaining full EVM compatibility!
+
+---
+
+## 📚 Complete Architecture Documentation
+
+### 🔍 Deep Dive into Vibekit's Complete System
+
+For users who want to understand the complete end-to-end architecture of Vibekit, including:
+
+- 🏗️ **Complete Agent Architecture**: Detailed breakdown of all agent components and interactions
+- 📡 **MCP Server Implementation**: How Model Context Protocol servers are structured and communicate
+- 🤖 **AI Model Integration**: How LLMs process user requests and orchestrate multi-step operations
+- 🔄 **Request Processing Flow**: Complete user-to-blockchain transaction lifecycle
+- 🛠️ **Tool & Skill Framework**: Advanced patterns for building custom agents
+- ⛓️ **Blockchain Integration**: Low-level protocol interactions and transaction management
+- 🔐 **Security & Error Handling**: Comprehensive safety mechanisms and recovery strategies
+
+Visit the complete repository documentation at: **[Vibekit Architecture Deep Dive](https://deepwiki.com/EmberAGI/arbitrum-vibekit)**
+
+This comprehensive resource contains:
+- 📖 **[Overview & Getting Started](https://deepwiki.com/EmberAGI/arbitrum-vibekit/1-overview)** - Complete system overview and setup
+- 🤖 **[AI Agents Detailed Guide](https://deepwiki.com/EmberAGI/arbitrum-vibekit/4-ai-agents)** - In-depth agent implementation details
+- 🏗️ **Architecture Patterns** - Advanced design patterns and best practices
+- 🔧 **Implementation Examples** - Real-world code examples and tutorials
+
+> 💡 **Pro Tip**: The DeepWiki documentation provides interactive code examples and detailed explanations that complement vibekit agents workflow perfectly!
