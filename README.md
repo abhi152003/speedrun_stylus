@@ -109,11 +109,11 @@ export const pricePredictionSkill = defineSkill({
 #### 🎨 Action Examples:
 
 **Price Prediction Query:**
-![Allora Price Prediction](assets/AlloraBTCPrediction.png)
+![Allora Price Prediction](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/AlloraBTCPrediction.png)
 _BTC price prediction transaction from the Allora agent_
 
 **Market Analysis:**
-![Allora Market Data](assets/AlloraETHPrediction.png)
+![Allora Market Data](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/AlloraETHPrediction.png)
 _ETH price prediction transaction from the Allora agent_
 
 #### 🔍 Workflow Process:
@@ -188,15 +188,15 @@ export async function handleSwapTokens(
 #### 🎨 Action Examples:
 
 **Yield Market Discovery:**
-![Pendle Markets](assets/PendlePools.png)
+![Pendle Markets](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/PendlePools.png)
 _Available Pendle pools transaction view_
 
 **Token Swap Execution:**
-![Pendle Swap](assets/PendleTx1.png)
+![Pendle Swap](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/PendleTx1.png)
 _Pendle transaction example #1_
 
 **Portfolio Overview:**
-![Pendle Portfolio](assets/PendleTx2.png)
+![Pendle Portfolio](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/PendleTx2.png)
 _Pendle transaction example #2_
 
 #### 🔍 Key Features:
