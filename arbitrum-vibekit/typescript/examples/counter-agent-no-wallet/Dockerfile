@@ -11,9 +11,17 @@ RUN apk add --no-cache git && \
 # The build context is the entire typescript/ directory to support pnpm workspaces
 COPY . .
 
+# Configure git to use HTTPS instead of SSH for GitHub
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" && \
+    git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/" && \
+    git config --global url."https://github.com/".insteadOf "https://git@github.com:" && \
+    git config --global url."https://github.com/".insteadOf "git+https://git@github.com:" && \
+    git config --global --add url."https://github.com/google-a2a/A2A.git".insteadOf "git@github.com:google-a2a/A2A.git"
+
 # Install all dependencies
 # This creates symlinks between workspace packages as pnpm normally does
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Build only the necessary workspace packages
 # The "..." suffix tells pnpm to build counter-agent-no-wallet and all its dependencies

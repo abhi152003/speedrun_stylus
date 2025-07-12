@@ -14,6 +14,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends git ca-certific
 # The build context is the entire typescript/ directory to support pnpm workspaces
 COPY . .
 
+# Configure git to use HTTPS instead of SSH for GitHub
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" && \
+    git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/" && \
+    git config --global url."https://github.com/".insteadOf "https://git@github.com:" && \
+    git config --global url."https://github.com/".insteadOf "git+https://git@github.com:" && \
+    git config --global --add url."https://github.com/google-a2a/A2A.git".insteadOf "git@github.com:google-a2a/A2A.git"
+
 # Install all dependencies
 # This creates symlinks between workspace packages as pnpm normally does
 RUN pnpm install --frozen-lockfile

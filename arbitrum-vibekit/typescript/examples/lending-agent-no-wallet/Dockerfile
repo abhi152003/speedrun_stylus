@@ -15,7 +15,7 @@ RUN corepack enable
 # ------------------------------
 # 1. Copy lockfile & workspace config that affect dependency graph cache
 # ------------------------------
-COPY pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
+COPY pnpm-lock.yaml* pnpm-workspace.yaml .npmrc* ./
 # Copy root package.json for pnpm workspace
 COPY package.json ./
 # Copy base TS configuration so that tsconfig.base.json can be resolved
@@ -32,6 +32,15 @@ COPY examples/lending-agent-no-wallet/package.json ./examples/lending-agent-no-w
 #    because source files are not yet in the build context (they are copied in step 4).
 #    This keeps the layer cache-friendly while avoiding prepare/postinstall failures.
 # ------------------------------
+
+# Configure git to use HTTPS instead of SSH for GitHub
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" && \
+git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/" && \
+git config --global url."https://github.com/".insteadOf "https://git@github.com:" && \
+git config --global url."https://github.com/".insteadOf "git+https://git@github.com:" && \
+git config --global --add url."https://github.com/google-a2a/A2A.git".insteadOf "git@github.com:google-a2a/A2A.git"
+
 RUN pnpm install --frozen-lockfile
 
 # ------------------------------
