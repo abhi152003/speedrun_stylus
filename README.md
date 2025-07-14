@@ -6,6 +6,27 @@
 
 🌟 **Challenge Goal**: By the end of this challenge, you'll have a comprehensive understanding of how Vibekit's agents operate, communicate via MCP, and execute complex DeFi operations across multiple protocols.
 
+## Age Verification Requirement
+
+⚠️ **Important**: Before accessing any Vibekit DeFi agents, users must verify that they are **18 years or older**.
+
+### 📋 Age Verification Process
+
+When you first access the Vibekit platform, you'll encounter an age verification screen that requires you enter your birthdate and click on the "Verify" button. 
+
+If you are 18 years or older, you will be able to access all DeFi agents. If you are not 18 years or older, you will not be able to access any DeFi agents.
+
+![Age Verification Screen](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/VibekitAgeVerifier.png)
+*Age verification interface showing the requirement to confirm users are 18+ before accessing DeFi agents*
+
+### 🚨 Why Age Verification?
+
+- **Legal Compliance**: DeFi operations involve financial transactions and require adult status
+- **Risk Awareness**: DeFi trading and lending carry financial risks
+- **Regulatory Requirements**: Many jurisdictions require age verification for financial services
+- **User Protection**: Ensures users understand the implications of DeFi operations
+
+
 ## 🏗️ Vibekit Agent Architecture Overview
 
 Vibekit implements a sophisticated multi-agent system where each agent specializes in specific DeFi operations. The system follows a clean separation of concerns with each agent running as an independent microservice, all orchestrated through Docker containers and unified via the MCP (Model Context Protocol).
@@ -87,7 +108,7 @@ suggestedActions: [
 _Depositing ARB token into the AAVE protocol with transaction preview and approval flow_
 
 **Transaction Execution:**
-![Lending Transaction Execution](http://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LendingTxImg.png)
+![Lending Transaction Execution](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-basic-agents/assets/LendingTxImg.png)
 _Transaction approval and execution process, showing 0.01 ARB deposited balance in AAVE_
 
 ---
