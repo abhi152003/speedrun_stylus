@@ -195,7 +195,7 @@ describeIfApiKey('Greeting Optimizer Integration Tests', () => {
       openRouterApiKey: OPENROUTER_API_KEY,
     });
 
-    const model = providers.openrouter!('openai/gpt-4o-mini');
+    const model = providers.openrouter!('deepseek/deepseek-chat-v3-0324:free');
     const workflow = createGreetingWorkflow(model);
     const initialState = createInitialState('greetings');
 

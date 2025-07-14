@@ -19,6 +19,7 @@ if (!providers.openrouter) {
 const agentConfig = {
   name: 'LangGraph Workflow Agent',
   version: '1.0.0',
+  protocolVersion: '1.0',
   description:
     'A hello-world agent demonstrating the evaluator-optimizer workflow pattern using LangGraph',
   url: 'https://github.com/arbitrum-vibekit/langgraph-workflow-agent',
@@ -35,7 +36,7 @@ const agentConfig = {
 // Create the agent with LLM configuration
 const agent = Agent.create(agentConfig, {
   llm: {
-    model: providers.openrouter!('openai/gpt-4o'),
+    model: providers.openrouter!('deepseek/deepseek-chat-v3-0324:free'),
   },
 });
 
@@ -50,7 +51,7 @@ async function main() {
     await agent.start(port, async () => {
       // Return context with the model
       return {
-        model: providers.openrouter!('openai/gpt-4o'),
+        model: providers.openrouter!('deepseek/deepseek-chat-v3-0324:free'),
       };
     });
 

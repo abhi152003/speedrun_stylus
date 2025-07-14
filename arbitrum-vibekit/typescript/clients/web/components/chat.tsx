@@ -2,7 +2,7 @@
 
 import type { Attachment, UIMessage } from 'ai';
 import { useChat } from '@ai-sdk/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
 import type { Vote } from '@/lib/db/schema';
@@ -16,6 +16,9 @@ import { toast } from 'sonner';
 import { useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { LocationVerifier } from './location-verifier';
+
+const LOCATION_VERIFIED_KEY = 'location_verified';
 
 export function Chat({
   id,
@@ -37,6 +40,13 @@ export function Chat({
   const { data: session } = useSession();
 
   const [selectedChatAgent, _setSelectedChatAgent] = useState(initialChatAgent);
+  const [isLocationVerified, setIsLocationVerified] = useState(false);
+
+  // Check sessionStorage for location verification status on mount
+  useEffect(() => {
+    const isAlreadyVerified = sessionStorage.getItem(LOCATION_VERIFIED_KEY) === 'true';
+    setIsLocationVerified(isAlreadyVerified);
+  }, []);
 
   const { messages, setMessages, handleSubmit, input, setInput, append, status, stop, reload } =
     useChat({
@@ -68,6 +78,11 @@ export function Chat({
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const isArtifactVisible = useArtifactSelector(state => state.isVisible);
 
+  const handleLocationVerificationSuccess = () => {
+    setIsLocationVerified(true);
+    sessionStorage.setItem(LOCATION_VERIFIED_KEY, 'true');
+  };
+
   return (
     <>
       <div className="flex flex-col min-w-0 h-dvh bg-background">
@@ -79,6 +94,10 @@ export function Chat({
             </p>
             <ConnectButton />
           </div>
+        )}
+
+        {(session && session?.user && !isLocationVerified) && (
+          <LocationVerifier onVerificationSuccess={handleLocationVerificationSuccess} />
         )}
         <ChatHeader />
 
@@ -113,23 +132,25 @@ export function Chat({
         </form>
       </div>
 
-      <Artifact
-        chatId={id}
-        input={input}
-        setInput={setInput}
-        handleSubmit={handleSubmit}
-        status={status}
-        stop={stop}
-        attachments={attachments}
-        setAttachments={setAttachments}
-        append={append}
-        messages={messages}
-        setMessages={setMessages}
-        reload={reload}
-        votes={votes}
-        isReadonly={isReadonly}
-        selectedAgentId={selectedChatAgent}
-      />
+      {isArtifactVisible && (
+        <Artifact
+          chatId={id}
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleSubmit}
+          status={status}
+          stop={stop}
+          attachments={attachments}
+          setAttachments={setAttachments}
+          append={append}
+          messages={messages}
+          setMessages={setMessages}
+          reload={reload}
+          votes={votes}
+          isReadonly={isReadonly}
+          selectedAgentId={selectedChatAgent}
+        />
+      )}
     </>
   );
 }
