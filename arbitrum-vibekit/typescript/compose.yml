@@ -1,59 +1,59 @@
 services:
-  lending-agent-no-wallet:
-    build:
-      context: ./
-      dockerfile: examples/lending-agent-no-wallet/Dockerfile
-    container_name: vibekit-lending-agent-no-wallet
-    env_file:
-      - path: .env
-        required: true
-      - path: examples/lending-agent-no-wallet/.env
-        required: false
-    ports:
-      - 3001:3001
-    restart: unless-stopped
-
-  swapping-agent-no-wallet:
-    build:
-      context: ./
-      dockerfile: examples/swapping-agent-no-wallet/Dockerfile
-    container_name: vibekit-swapping-agent-no-wallet
-    env_file:
-      - path: .env
-        required: true
-      - path: examples/swapping-agent-no-wallet/.env
-        required: false
-    ports:
-      - 3005:3005
-    restart: unless-stopped
-
-  counter-agent-no-wallet:
-    build:
-      context: ./
-      dockerfile: examples/counter-agent-no-wallet/Dockerfile
-    container_name: vibekit-counter-agent-no-wallet
-    env_file:
-      - path: .env
-        required: true
-      - path: examples/counter-agent-no-wallet/.env
-        required: false
-    ports:
-      - 3010:3010
-    restart: unless-stopped
-
-  # langgraph-workflow-agent:
+  # lending-agent-no-wallet:
   #   build:
   #     context: ./
-  #     dockerfile: templates/langgraph-workflow-agent/Dockerfile
-  #   container_name: vibekit-langgraph-workflow-agent
+  #     dockerfile: examples/lending-agent-no-wallet/Dockerfile
+  #   container_name: vibekit-lending-agent-no-wallet
   #   env_file:
   #     - path: .env
   #       required: true
-  #     - path: templates/langgraph-workflow-agent/.env
+  #     - path: examples/lending-agent-no-wallet/.env
   #       required: false
   #   ports:
-  #     - 3009:3009
+  #     - 3001:3001
   #   restart: unless-stopped
+
+  # swapping-agent-no-wallet:
+  #   build:
+  #     context: ./
+  #     dockerfile: examples/swapping-agent-no-wallet/Dockerfile
+  #   container_name: vibekit-swapping-agent-no-wallet
+  #   env_file:
+  #     - path: .env
+  #       required: true
+  #     - path: examples/swapping-agent-no-wallet/.env
+  #       required: false
+  #   ports:
+  #     - 3005:3005
+  #   restart: unless-stopped
+
+  # counter-agent-no-wallet:
+  #   build:
+  #     context: ./
+  #     dockerfile: examples/counter-agent-no-wallet/Dockerfile
+  #   container_name: vibekit-counter-agent-no-wallet
+  #   env_file:
+  #     - path: .env
+  #       required: true
+  #     - path: examples/counter-agent-no-wallet/.env
+  #       required: false
+  #   ports:
+  #     - 3010:3010
+  #   restart: unless-stopped
+
+  langgraph-workflow-agent:
+    build:
+      context: ./
+      dockerfile: templates/langgraph-workflow-agent/Dockerfile
+    container_name: vibekit-langgraph-workflow-agent
+    env_file:
+      - path: .env
+        required: true
+      - path: templates/langgraph-workflow-agent/.env
+        required: false
+    ports:
+      - 3009:3009
+    restart: unless-stopped
 
   # quickstart-agent-template:
   #   build:
@@ -69,19 +69,19 @@ services:
   #     - 3007:3007
   #   restart: unless-stopped
 
-  # allora-price-prediction-agent:
-  #   build:
-  #     context: ./
-  #     dockerfile: templates/allora-price-prediction-agent/Dockerfile
-  #   container_name: vibekit-allora-price-prediction-agent
-  #   env_file:
-  #     - path: .env
-  #       required: true
-  #     - path: templates/allora-price-prediction-agent/.env
-  #       required: false
-  #   ports:
-  #     - 3008:3008
-  #   restart: unless-stopped
+  allora-price-prediction-agent:
+    build:
+      context: ./
+      dockerfile: templates/allora-price-prediction-agent/Dockerfile
+    container_name: vibekit-allora-price-prediction-agent
+    env_file:
+      - path: .env
+        required: true
+      - path: templates/allora-price-prediction-agent/.env
+        required: false
+    ports:
+      - 3008:3008
+    restart: unless-stopped
 
   # liquidity-agent-no-wallet:
   #   build:
@@ -97,19 +97,19 @@ services:
   #     - 3002:3002
   #   restart: unless-stopped
 
-  # pendle-agent:
-  #   build:
-  #     context: ./
-  #     dockerfile: examples/pendle-agent/Dockerfile
-  #   container_name: vibekit-pendle-agent
-  #   env_file:
-  #     - path: .env
-  #       required: true
-  #     - path: examples/pendle-agent/.env
-  #       required: false
-  #   ports:
-  #     - 3003:3003
-  #   restart: unless-stopped
+  pendle-agent:
+    build:
+      context: ./
+      dockerfile: examples/pendle-agent/Dockerfile
+    container_name: vibekit-pendle-agent
+    env_file:
+      - path: .env
+        required: true
+      - path: examples/pendle-agent/.env
+        required: false
+    ports:
+      - 3003:3003
+    restart: unless-stopped
 
   # swapping-agent:
   #   build:

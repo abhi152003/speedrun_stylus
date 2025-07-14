@@ -22,6 +22,7 @@ if (!providers.openrouter) {
 export const agentConfig: AgentConfig = {
   name: process.env.AGENT_NAME || 'Allora Price Prediction Agent',
   version: process.env.AGENT_VERSION || '1.0.0',
+  protocolVersion: '1.0',
   description:
     process.env.AGENT_DESCRIPTION || 'An AI agent that provides price predictions using Allora prediction markets data',
   skills: [pricePredictionSkill],
