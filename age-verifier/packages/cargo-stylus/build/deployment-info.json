@@ -1,0 +1,6 @@
+{
+  "network": "arbitrum-sepolia",
+  "contract_address": "0x65310664664Ea50bbb1aDB9cF183BA0B8d52F544",
+  "transaction_hash": "0x93c9f97fb08a1a6c8c64de382ebb9c19f8fd042273cb3317ef88c050eae5cb6f",
+  "rpc_url": "https://sepolia-rollup.arbitrum.io/rpc"
+}

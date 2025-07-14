@@ -9211,7 +9211,7 @@ __metadata:
     circomlib: ^2.0.5
     husky: ^9.1.6
     lint-staged: ^15.2.10
-    solc: ^0.8.28
+    solc: ^0.8.30
   languageName: unknown
   linkType: soft
 
@@ -9491,9 +9491,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solc@npm:^0.8.28":
-  version: 0.8.28
-  resolution: "solc@npm:0.8.28"
+"solc@npm:^0.8.30":
+  version: 0.8.30
+  resolution: "solc@npm:0.8.30"
   dependencies:
     command-exists: ^1.2.8
     commander: ^8.1.0
@@ -9504,7 +9504,7 @@ __metadata:
     tmp: 0.0.33
   bin:
     solcjs: solc.js
-  checksum: c22ec95c23505409e83fd7e2c1af47a2b2092d1886c1cf2256b9bc28958963d5bfc9944dc34d0d2e0cbc00975878068b8d87ab7407cec0f9ca5ac57951ee789a
+  checksum: 8b3b50406cbba78d0aa1916bd7aee015a3510cb36b787597bbdea824f898449bedd5d528b558687c259b367e8e2c36a0e268dbbad25a5f9a9af706393f4890a4
   languageName: node
   linkType: hard
 
