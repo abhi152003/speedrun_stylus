@@ -12,7 +12,7 @@ describeIfApiKey('Structured Workflow Test', () => {
   });
 
   it('should handle simple hello with improved personalization', async () => {
-    const model = providers.openrouter!('openai/gpt-4o-mini');
+    const model = providers.openrouter!('deepseek/deepseek-chat-v3-0324:free');
     const workflow = createGreetingWorkflow(model);
     const initialState = createInitialState('hello');
 
@@ -69,7 +69,7 @@ describeIfApiKey('Structured Workflow Test', () => {
   }, 60000);
 
   it('should make strategic decisions based on satisfaction levels', async () => {
-    const model = providers.openrouter!('openai/gpt-4o-mini');
+    const model = providers.openrouter!('deepseek/deepseek-chat-v3-0324:free');
     const workflow = createGreetingWorkflow(model);
     const initialState = createInitialState('hey there');
 
@@ -96,7 +96,7 @@ describeIfApiKey('Structured Workflow Test', () => {
   }, 60000);
 
   it('should demonstrate iterative improvement through feedback', async () => {
-    const model = providers.openrouter!('openai/gpt-4o-mini');
+    const model = providers.openrouter!('deepseek/deepseek-chat-v3-0324:free');
     const workflow = createGreetingWorkflow(model);
     const initialState = createInitialState('hi');
 

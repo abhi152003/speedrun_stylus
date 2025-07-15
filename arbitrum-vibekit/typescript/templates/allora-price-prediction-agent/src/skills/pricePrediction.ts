@@ -37,7 +37,8 @@ export const pricePredictionSkill = defineSkill({
   mcpServers: [
     {
       command: 'node', // Using node since the package is built
-      moduleName: '@alloralabs/mcp-server', // Will be resolved from workspace
+      moduleName:
+        '/app/lib/mcp-tools/allora-mcp-server/dist/index.js',
       env: {
         ALLORA_API_KEY: process.env.ALLORA_API_KEY || '',
         // Use a different port for the STDIO-spawned Allora MCP server to avoid conflicts

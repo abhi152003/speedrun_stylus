@@ -3,6 +3,12 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
+# Install git and other build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    update-ca-certificates
+
 # Install pnpm globally
 RUN npm install -g pnpm@10.7.0 typescript@5.8.3
 
@@ -26,7 +32,7 @@ COPY examples/pendle-agent/package.json ./examples/pendle-agent/
 #    because source files are not yet in the build context (they are copied in step 4).
 #    This keeps the layer cache-friendly while avoiding prepare/postinstall failures.
 # ------------------------------
-RUN pnpm install --prefer-frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # ------------------------------
 # 4. Now copy the rest of the source code
@@ -73,7 +79,7 @@ RUN chown -R ember:ember /app
 USER ember
 
 # Expose port for SSE MCP server
-EXPOSE 3001
+EXPOSE 3003
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

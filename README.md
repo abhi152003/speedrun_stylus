@@ -1,60 +1,163 @@
-# 🚀 Challenge #13: Deep Dive into Vibekit's Advanced Agents
+# 🚀 Challenge #13: Vibekit Geo-fenced AI Agents
 
-🎯 **Objective**: Master the advanced agents in Vibekit: AI-powered price predictions, yield tokenization, and workflow optimization through the Model Context Protocol (MCP) architecture.
+🎯 **Objective**: Experience a secure, location-verified AI agent system that combines Zero-Knowledge Proof (ZKP) location verification with advanced Vibekit AI agents for DeFi operations.
 
 📊 **Difficulty Level**: Medium to Advanced
 
-🌟 **Challenge Goal**: By the end of this challenge, you'll have a comprehensive understanding of how Vibekit's next-generation agents operate, communicate via MCP, and execute complex AI workflows, prediction markets, and yield strategies.
+🌟 **Challenge Goal**: Build and deploy a full-stack application featuring location-based access control using ZKP, followed by access to three advanced AI agents: price predictions, yield tokenization, and workflow optimization.
 
-## ⚙️ Vibekit Agent Architecture Overview
+## 🏗️ System Architecture Overview
 
-Vibekit implements a sophisticated multi-agent system where each agent specializes in specific AI-driven operations. The system follows a clean separation of concerns with each agent running as an independent microservice, all orchestrated through Docker containers and unified via the MCP (Model Context Protocol).
+This project combines two powerful technologies:
 
-### 🔧 Docker Service Architecture
+1. **🔐 ZKP Location Verification**: Zero-Knowledge Proofs for private location verification on Arbitrum Stylus
+2. **🤖 Vibekit AI Agents**: Advanced AI-powered DeFi agents using Model Context Protocol (MCP)
 
-When you run `docker compose up`, Vibekit starts the following advanced services:
+### 🔧 Service Architecture
+
+When fully deployed, the system runs:
 
 ```yaml
 📊 Service Overview:
-├── 🌐 Web Frontend (Port 3000)
+├── 🌐 Vibekit Web Frontend (Port 3000)
 ├── 🗄️  PostgreSQL Database (Internal)
 ├── 📈 Allora Price Prediction Agent (Port 3008)
 ├── 💰 Pendle Yield Agent (Port 3003)
-└── 🔄 LangGraph Workflow Agent (Port 3009)
+├── 🔄 LangGraph Workflow Agent (Port 3009)
+└── 🔐 ZKP Location Verifier (Arbitrum Stylus Dev Node)
 ```
 
+---
+
+## 🚀 Step-by-Step Setup Guide
+
+### Prerequisites
+
+Before starting, ensure you have the following installed:
+
+- [Node.js (>= v18.17)](https://nodejs.org/en/download/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
+- [Git](https://git-scm.com/downloads)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+### Step 1: 🐳 Start Vibekit Backend Services
+
+1. **Navigate to the arbitrum-vibekit folder:**
+
+   ```bash
+   cd arbitrum-vibekit/typescript
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Build the project:**
+
+   ```bash
+   pnpm build
+   ```
+
+4. **Start all Vibekit services with Docker Compose:**
+
+   ```bash
+   docker compose up
+   ```
+
+   This will start:
+
+   - PostgreSQL Database
+   - Allora Price Prediction Agent (Port 3008)
+   - Pendle Yield Agent (Port 3003)
+   - LangGraph Workflow Agent (Port 3009)
+   - Vibekit Web Frontend (Port 3000)
+
+> ⚠️ **Keep this terminal running** - the Docker services need to stay active.
+
+### Step 2: 🔐 Setup ZKP Location Verification
+
+1. **Open a new terminal window** (keep the first one running)
+
+2. **Navigate to the locationVerifier folder:**
+
+   ```bash
+   cd locationVerifier
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   yarn install
+   ```
+
+4. **Navigate to the cargo-stylus package:**
+
+   ```bash
+   cd packages/cargo-stylus
+   ```
+
+5. **Start the Arbitrum Stylus dev node and deploy ZKP contracts:**
+
+   ```bash
+   bash run-dev-node.sh
+   ```
+
+   This script:
+
+   - Spins up an Arbitrum Stylus Nitro dev node in Docker
+   - Deploys the `LocationVerifier.sol` contract
+   - Generates the ABI for interacting with the contract
+   - The dev node will be accessible at `http://localhost:8547`
+
+> ⚠️ **Keep this terminal running** - the ZKP backend needs to stay active.
+
+> **Troubleshooting:**
+> If you encounter any issues running the script, please refer to the official challenge guide: [https://www.speedrunstylus.com/challenge/zkp-location](https://www.speedrunstylus.com/challenge/zkp-location)
+
+### Step 3: 🌐 Access the Vibekit Frontend & Location Verification
+
+> **Note:** The Vibekit frontend is automatically started as part of the Docker Compose process in Step 1. There is no need to open another terminal or run additional commands for the frontend.
+
+- Open your browser and go to [http://localhost:3000](http://localhost:3000)
+- You will be greeted with a location verification screen before accessing the agents.
+
+![Location Verification UI](assets/locationVerificationUI.png)
+
+_Example: Location Verification Required screen_
 
 ---
 
-## 🏗️ Vibekit Advanced Agent Architecture Deep Dive
+## 🔐 Location Verification Process
 
-### 🔑 Key Architectural Principles
+### How ZKP Location Verification Works
 
-**🤖 AI-First Design**: Each agent leverages advanced AI models for natural language processing, prediction, and optimization workflows.
+The system uses Zero-Knowledge Proofs to verify your location without revealing your exact coordinates:
 
-**📊 Data-Driven Operations**: Agents process real-time market data, prediction algorithms, and yield calculations through specialized MCP servers.
+1. **Circuit Design**: ZKP logic is defined in `LocationVerifier.circom` using the Circom language
+2. **Proof Generation**: Your browser generates a proof that you're within a specific geographic boundary
+3. **On-Chain Verification**: The proof is verified on the Arbitrum Stylus dev node
+4. **Access Control**: Only after successful verification can you access the Vibekit AI agents
 
-**🔄 Workflow Orchestration**: Advanced agents support complex multi-step workflows with conditional logic and iterative optimization.
+### Location Verification Features
 
-**🧠 LLM Orchestration**: AI models handle intent routing, sequential execution, conditional logic, error recovery, and complex decision-making across all operations.
-
-**🔧 Skill-Tool Separation**:
-
-- **Skills** = External interface (what users see)
-- **Tools** = Internal implementation (how operations execute)
-- **Workflows** = Multi-step processes with state management
-
-**🔌 MCP Integration**: Universal protocol for connecting agents to AI services, prediction markets, and yield protocols.
+- **Private Verification**: Your exact coordinates are never revealed
+- **Geographic Boundaries**: Configurable bounding boxes for different regions
+- **Real-time Verification**: Instant proof generation and verification
+- **Arbitrum Stylus**: Ultra-fast verification using Rust-based smart contracts
 
 ---
 
-## 🎯 Three Advanced Vibekit Agents
+## 🤖 Vibekit AI Agents
+
+Once location verification is complete, you'll have access to three advanced AI agents:
 
 ### 1. 📈 Allora Price Prediction Agent
 
 **Port**: `3008` | **Container**: `allora-price-prediction-agent`
 
-The Allora Price Prediction Agent leverages decentralized prediction markets to provide AI-powered price forecasts for cryptocurrency tokens using Allora's machine learning inference network.
+Leverages decentralized prediction markets to provide AI-powered price forecasts for cryptocurrency tokens using Allora's machine learning inference network.
 
 #### 🎯 Available Actions:
 
@@ -86,26 +189,6 @@ suggestedActions: [
 - **Market Intelligence**: Access to Allora's decentralized ML inference network
 - **Real-time Data**: Live prediction market data and confidence intervals
 
-#### 🔧 Technical Architecture:
-
-```typescript
-// Skill Definition
-export const pricePredictionSkill = defineSkill({
-  id: "predict-price",
-  name: "Predict Price",
-  description:
-    "Get price predictions for a given token from Allora prediction markets",
-  tags: ["prediction", "price", "market-data", "allora"],
-  tools: [getPricePredictionTool],
-  mcpServers: [
-    {
-      moduleName: "@alloralabs/mcp-server",
-      env: { ALLORA_API_KEY: process.env.ALLORA_API_KEY },
-    },
-  ],
-});
-```
-
 #### 🎨 Action Examples:
 
 **Price Prediction Query:**
@@ -116,20 +199,13 @@ _BTC price prediction transaction from the Allora agent_
 ![Allora Market Data](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/AlloraETHPrediction.png)
 _ETH price prediction transaction from the Allora agent_
 
-#### 🔍 Workflow Process:
-
-1. **Topic Discovery**: AI automatically finds relevant prediction topics
-2. **Data Retrieval**: Connects to Allora MCP server for inference data
-3. **Analysis Processing**: Processes ML predictions and confidence intervals
-4. **Result Formatting**: Presents human-readable forecasts with context
-
 ---
 
 ### 2. 💰 Pendle Yield Tokenization Agent
 
 **Port**: `3003` | **Container**: `pendle-agent`
 
-The Pendle Agent specializes in yield tokenization strategies, enabling users to split yield-bearing assets into Principal Tokens (PT) and Yield Tokens (YT) for advanced yield farming and trading strategies.
+Specializes in yield tokenization strategies, enabling users to split yield-bearing assets into Principal Tokens (PT) and Yield Tokens (YT) for advanced yield farming and trading strategies.
 
 #### 🎯 Available Actions:
 
@@ -155,36 +231,6 @@ suggestedActions: [
 - **Swap Operations**: Exchange between underlying assets, PT, and YT tokens
 - **Portfolio Analysis**: Track yield positions and performance metrics
 
-#### 🔧 Technical Architecture:
-
-```typescript
-// Agent Tool Handler Example
-export async function handleSwapTokens(
-  params: SwapTokensArgs,
-  context: HandlerContext
-): Promise<Task> {
-  // Multi-chain token resolution
-  const fromTokenResult = findTokenDetail(
-    fromToken,
-    effectiveChainName,
-    context.tokenMap
-  );
-  const toTokenResult = findTokenDetail(
-    toToken,
-    toTokenChainName,
-    context.tokenMap
-  );
-
-  // Pendle-specific swap execution
-  const swapParamsForMcp: SwapTokensParams = {
-    fromTokenAddress: fromTokenResult.address,
-    fromTokenChainId: fromTokenResult.chainId,
-    toTokenAddress: toTokenResult.address,
-    // ... additional Pendle parameters
-  };
-}
-```
-
 #### 🎨 Action Examples:
 
 **Yield Market Discovery:**
@@ -199,20 +245,13 @@ _Pendle transaction example #1_
 ![Pendle Portfolio](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/PendleTx2.png)
 _Pendle transaction example #2_
 
-#### 🔍 Key Features:
-
-- **Multi-Chain Token Support**: Automatic chain detection and token mapping
-- **Yield Optimization**: Smart routing for optimal yield strategies
-- **Risk Management**: Built-in slippage protection and validation
-- **Real-time Markets**: Live yield market data and APY calculations
-
 ---
 
 ### 3. 🔄 LangGraph Workflow Agent
 
 **Port**: `3009` | **Container**: `langgraph-workflow-agent`
 
-The LangGraph Workflow Agent demonstrates advanced AI workflow orchestration using LangGraph's state management system. It showcases iterative optimization processes with evaluator-optimizer patterns.
+Demonstrates advanced AI workflow orchestration using LangGraph's state management system. It showcases iterative optimization processes with evaluator-optimizer patterns.
 
 #### 🎯 Available Actions:
 
@@ -252,15 +291,9 @@ suggestedActions: [
 4. **Conditional Logic**: Determines whether to continue or terminate
 5. **State Management**: Tracks progress and maintains workflow history
 
-#### 🔍 Advanced Features:
-
-- **Multi-Criteria Evaluation**: Friendliness, engagement, and personalization metrics
-- **Iterative Refinement**: Up to 3 optimization cycles
-- **Satisfaction Tracking**: Continuous quality assessment
-- **Complete Audit Trail**: Full workflow history with decision points
-
 ---
 
+## 🛠️ Advanced Features
 
 ### 🔧 Key Advanced Components
 
@@ -296,44 +329,53 @@ Sophisticated error recovery mechanisms:
 
 ---
 
-## 🚀 Coming Soon: Next-Generation Stylus Agent
+## 🚀 Deployment
 
-### ⚡ Rust-Powered DeFi Agent on Arbitrum Sepolia
+### Production Deployment
 
-🦀 **RUST CONTRACTS** + 🤖 **AI AGENTS** = 🚀 **NEXT-LEVEL DEFI**
+To deploy your application to production:
 
-We're excited to announce the upcoming integration of **Vibekit's Stylus-based Agent** - a revolutionary DeFi agent that combines the power of Rust smart contracts with AI-driven automation on Arbitrum Sepolia!
+1. **Deploy ZKP contracts to Arbitrum Sepolia:**
 
-### 🎯 Key Features
+   ```bash
+   cd locationVerifier/packages/cargo-stylus
+   cargo stylus deploy --network arbitrum-sepolia
+   ```
 
-**🦀 Rust Smart Contracts:**
-- ⚡ **Ultra-Fast Execution**: Near-native speed with Stylus
-- 🔒 **Memory Safety**: Rust's ownership model ensures security  
-- 💰 **Gas Optimization**: Up to 10x cheaper than Solidity
+2. **Deploy Vibekit frontend to Vercel:**
+   ```bash
+   cd arbitrum-vibekit/typescript
+   vercel --prod
+   ```
 
+### Environment Variables
 
+Ensure you have the following environment variables configured:
 
-### 🔥 Performance Comparison
+```bash
+# Allora API Key (for price predictions)
+ALLORA_API_KEY=your_allora_api_key
 
-| Feature | Traditional Solidity | 🦀 **Stylus + AI** |
-|---------|---------------------|-------------------|
-| **Execution Speed** | ~13ms per operation | ⚡ **~1ms per operation** |
-| **Gas Efficiency** | Standard costs | 💰 **Up to 10x cheaper** |
-| **Memory Safety** | Runtime errors possible | 🔒 **Compile-time guarantees** |
+# Database URL (for Vibekit)
+POSTGRES_URL=your_database_url
 
-### 🔔 Stay Updated
+# Arbitrum RPC URL
+ARBITRUM_RPC_URL=your_arbitrum_rpc_url
+```
 
-⭐ **Star this repository** to get notified when the Stylus Agent launches on Arbitrum Sepolia!
+---
 
-> **🦀 Fun Fact**: Stylus contracts execute up to **10x faster** than traditional Solidity while maintaining full EVM compatibility!
+## 🏁 Next Steps
+
+Explore more challenges or contribute to this project!
+
+> 🏃 Head to your next challenge [here](https://speedrunstylus.com/challenge/zkp-model).
 
 ---
 
 ## 📚 Complete Architecture Documentation
 
-### 🔍 Deep Dive into Vibekit's Complete System
-
-For users who want to understand the complete end-to-end architecture of Vibekit, including:
+For users who want to understand the complete end-to-end architecture, including:
 
 - 🏗️ **Complete Agent Architecture**: Detailed breakdown of all agent components and interactions
 - 📡 **MCP Server Implementation**: How Model Context Protocol servers are structured and communicate
@@ -345,10 +387,4 @@ For users who want to understand the complete end-to-end architecture of Vibekit
 
 Visit the complete repository documentation at: **[Vibekit Architecture Deep Dive](https://deepwiki.com/EmberAGI/arbitrum-vibekit)**
 
-This comprehensive resource contains:
-- 📖 **[Overview & Getting Started](https://deepwiki.com/EmberAGI/arbitrum-vibekit/1-overview)** - Complete system overview and setup
-- 🤖 **[AI Agents Detailed Guide](https://deepwiki.com/EmberAGI/arbitrum-vibekit/4-ai-agents)** - In-depth agent implementation details
-- 🏗️ **Architecture Patterns** - Advanced design patterns and best practices
-- 🔧 **Implementation Examples** - Real-world code examples and tutorials
-
-> 💡 **Pro Tip**: The DeepWiki documentation provides interactive code examples and detailed explanations that complement vibekit agents workflow perfectly!
+> 💡 **Pro Tip**: The DeepWiki documentation provides interactive code examples and detailed explanations that complement the Vibekit agents workflow perfectly!

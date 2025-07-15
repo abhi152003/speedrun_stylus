@@ -1,3 +1,7 @@
 [submodule "packages/cargo-stylus/stylus-demo"]
 	path = packages/cargo-stylus/stylus-demo
 	url = https://github.com/abhi152003/stylus-demo.git
+[submodule "locationVerifier"]
+	path = locationVerifier
+	url = https://github.com/abhi152003/speedrun_stylus.git
+	branch = stylus-zkp-location-verifier
