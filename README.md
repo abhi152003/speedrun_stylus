@@ -47,12 +47,26 @@ yarn install
 
 Navigate to the `nextjs` folder and start the development server:
 
+> ⚠️ **Before running the frontend:**
+> 
+>    Go to the `packages/nextjs` directory:
+>    ```bash
+>    cd packages/nextjs
+>    cp .env.example .env
+>    ```
+>    Open the `.env` file and set:
+>    ```env
+>    NEXT_PUBLIC_RPC_URL=http://localhost:8547
+>    NEXT_PUBLIC_PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+>    ```
+
+
 ```bash
 cd packages/nextjs
 yarn dev
 ```
 
-> The app will be available at [http://localhost:3000](http://localhost:3000).
+> The app will be available at [http://localhost:3000/anon-aadhaar](http://localhost:3000/anon-aadhaar).
 
 > **Note:** The app works out-of-the-box with the Anon Aadhaar SDK. You don't need to run a local Stylus node unless you want to modify the underlying ZK circuits and verifier contracts.
 
@@ -139,6 +153,43 @@ For production deployment:
 vercel --prod
 ```
 
+## 🚀 Deploying to Arbitrum Sepolia
+
+If you want to deploy your Balance Checker contract to the Arbitrum Sepolia testnet, follow these steps:
+
+1. **Export your private key in the terminal**
+   ```bash
+   export PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+   ```
+
+2. **Run the Sepolia Deployment Script**
+   ```bash
+   cd packages/cargo-stylus/zkp_balance_checker
+   bash run-sepolia-deploy.sh
+   ```
+   This will deploy your contract to Arbitrum Sepolia and output the contract address and transaction hash.
+
+3. **Configure the Frontend for Sepolia**
+   - Go to the `packages/nextjs` directory:
+     ```bash
+     cd packages/nextjs
+     cp .env.example .env
+     ```
+   - Open the `.env` file and set the following variables:
+     ```env
+     NEXT_PUBLIC_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
+     NEXT_PUBLIC_PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+     ```
+     Replace `your_private_key_of_your_ethereum_wallet` with your actual Ethereum wallet private key (never share this key publicly).
+
+4. **Start the Frontend**
+   ```bash
+   yarn run dev
+   ```
+   Your frontend will now connect to the Arbitrum Sepolia network and interact with your deployed contract.
+
+---
+
 ## 🏆 Credits and Acknowledgements
 
 This project uses the following open-source technology:
@@ -152,8 +203,8 @@ This project uses the following open-source technology:
 - Implement on-chain credential issuance based on successful verifications
 - Integrate with decentralized identity frameworks
 
-## 🎉🎉 Congratulations! 🎉🎉
+## 🏁 Next Steps
 
-You've successfully completed all the challenges! Your dedication and hard work have paid off. Keep exploring and learning more about the exciting world of blockchain technology. 
+Explore more challenges or contribute to this project!
 
-Good luck on your journey ahead! 🚀
+> 🏃 Head to your next challenge [here](https://www.speedrunstylus.com/challenge/vibekit-setup).
