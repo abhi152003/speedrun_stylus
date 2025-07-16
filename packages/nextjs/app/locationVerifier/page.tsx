@@ -21,7 +21,7 @@ export default function LocationVerifier() {
   const [areBoundingBoxInputsDisabled, setAreBoundingBoxInputsDisabled] = useState<boolean>(false);
 
   // Replace with your deployed contract address on Arbitrum Stylus
-  const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527"; // Update with your contract address
+  const CONTRACT_ADDRESS = "0x4Dc306Ca7213CFeC911da87A5A987fD0b27399D7"; // Update with your contract address
   const CONTRACT_ABI = [
     {
       inputs: [
@@ -41,8 +41,8 @@ export default function LocationVerifier() {
     const loadContract = async () => {
       try {
         setError(null);
-        const provider = new ethers.JsonRpcProvider("http://localhost:8547");
-        const privateKey = "0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659";
+        const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL || "");
+        const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY || "";
         const newSigner = new ethers.Wallet(privateKey, provider);
         setSigner(newSigner);
 
