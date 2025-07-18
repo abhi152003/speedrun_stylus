@@ -3,13 +3,18 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
+# Install git and other build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install pnpm globally
 RUN npm install -g pnpm@10.7.0 typescript@5.8.3
 
 # ------------------------------
 # 1. Copy lockfile & workspace config that affect dependency graph cache
 # ------------------------------
-COPY pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
+COPY pnpm-lock.yaml* pnpm-workspace.yaml ./
 # Copy root package.json for pnpm workspace
 COPY package.json ./
 # Copy base TS configuration so that tsconfig.base.json can be resolved
@@ -26,7 +31,7 @@ COPY examples/liquidity-agent-no-wallet/package.json ./examples/liquidity-agent-
 #    because source files are not yet in the build context (they are copied in step 4).
 #    This keeps the layer cache-friendly while avoiding prepare/postinstall failures.
 # ------------------------------
-RUN pnpm install --prefer-frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # ------------------------------
 # 4. Now copy the rest of the source code
@@ -42,7 +47,7 @@ RUN pnpm --filter liquidity-agent-no-wallet... build
 FROM node:20-slim AS production
 
 # Copy pnpm config
-COPY --from=builder /app/.npmrc ./
+# COPY --from=builder /app/.npmrc ./
 
 # Create a non-root user
 RUN apt-get update && apt-get install -y --no-install-recommends dumb-init && \

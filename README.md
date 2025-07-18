@@ -42,6 +42,10 @@ Before starting, ensure you have the following installed:
 
 ### Step 1: 🐳 Start Vibekit Backend Services
 
+Note : Make sure to set your private key and contract address in the .env file inside the `arbitrum-vibekit/typescript/clients/web` folder before running the `docker compose up` command.
+
+You can see .env.example file in the `arbitrum-vibekit/typescript/clients/web` folder as a reference.
+
 1. **Navigate to the arbitrum-vibekit folder:**
 
    ```bash
@@ -98,20 +102,22 @@ Before starting, ensure you have the following installed:
    cd packages/cargo-stylus
    ```
 
-5. **Start the Arbitrum Stylus dev node and deploy ZKP contracts:**
+5. **Deploy the Location Verifier contract on arbitrum sepolia**
 
    ```bash
-   bash run-dev-node.sh
+   bash run-sepolia-deploy.sh
+   ```
+
+   Note : Make sure to export your private key in the terminal before running the script.
+   ```bash
+   export PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
    ```
 
    This script:
-
-   - Spins up an Arbitrum Stylus Nitro dev node in Docker
+  
    - Deploys the `LocationVerifier.sol` contract
    - Generates the ABI for interacting with the contract
-   - The dev node will be accessible at `http://localhost:8547`
 
-> ⚠️ **Keep this terminal running** - the ZKP backend needs to stay active.
 
 > **Troubleshooting:**
 > If you encounter any issues running the script, please refer to the official challenge guide: [https://www.speedrunstylus.com/challenge/zkp-location](https://www.speedrunstylus.com/challenge/zkp-location)
@@ -123,7 +129,7 @@ Before starting, ensure you have the following installed:
 - Open your browser and go to [http://localhost:3000](http://localhost:3000)
 - You will be greeted with a location verification screen before accessing the agents.
 
-![Location Verification UI](assets/locationVerificationUI.png)
+![Location Verification UI](https://raw.githubusercontent.com/abhi152003/speedrun_stylus/refs/heads/vibekit-advanced-agents/assets/locationVerificationUI.png)
 
 _Example: Location Verification Required screen_
 

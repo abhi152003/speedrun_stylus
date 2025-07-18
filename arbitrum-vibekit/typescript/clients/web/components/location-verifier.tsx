@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, MapPin, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { LOCATION_VERIFIER_CONFIG } from '@/lib/contracts/location-verifier';
 
 interface LocationVerifierProps {
   onVerificationSuccess: () => void;
@@ -32,8 +33,6 @@ export function LocationVerifier({ onVerificationSuccess }: LocationVerifierProp
   const [error, setError] = useState<string | null>(null);
   const [isLocationDisabled, setIsLocationDisabled] = useState<boolean>(false);
   const [areBoundingBoxInputsDisabled, setAreBoundingBoxInputsDisabled] = useState<boolean>(false);
-
-  const CONTRACT_ADDRESS = '0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527';
 
   // Check if user has already verified location
   useEffect(() => {
@@ -63,12 +62,37 @@ export function LocationVerifier({ onVerificationSuccess }: LocationVerifierProp
     const loadContract = async () => {
       try {
         setError(null);
-        const provider = new ethers.JsonRpcProvider('http://localhost:8547');
-        const privateKey = '0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659';
-        const newSigner = new ethers.Wallet(privateKey, provider);
-        setSigner(newSigner);
-
-        const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, newSigner);
+        
+        // Use config for contract address, RPC URL, and private key
+        const CONTRACT_ADDRESS = LOCATION_VERIFIER_CONFIG.contractAddress;
+        const RPC_URL = LOCATION_VERIFIER_CONFIG.network.rpcUrl;
+        const CONTRACT_ABI = LOCATION_VERIFIER_CONFIG.abi;
+        const PRIVATE_KEY = LOCATION_VERIFIER_CONFIG.privateKey;
+        
+        console.log('CONTRACT_ADDRESS (from config):', CONTRACT_ADDRESS);
+        console.log('RPC_URL (from config):', RPC_URL);
+        console.log('PRIVATE_KEY (from config):', PRIVATE_KEY ? '[REDACTED]' : 'NOT SET');
+        
+        if (!CONTRACT_ADDRESS) {
+          throw new Error('NEXT_PUBLIC_LOCATION_VERIFIER_CONTRACT_ADDRESS environment variable is not set');
+        }
+        if (!RPC_URL) {
+          throw new Error('NEXT_PUBLIC_LOCATION_VERIFIER_RPC_URL environment variable is not set');
+        }
+        
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        let contractInstance;
+        let newSigner = null;
+        if (PRIVATE_KEY) {
+          newSigner = new ethers.Wallet(PRIVATE_KEY, provider);
+          setSigner(newSigner);
+          contractInstance = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, newSigner);
+          console.log('Contract and signer initialized successfully');
+        } else {
+          setSigner(null);
+          contractInstance = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+          console.log('Contract initialized in read-only mode');
+        }
         setContract(contractInstance);
       } catch (err: any) {
         setError(err.message);
@@ -176,7 +200,7 @@ export function LocationVerifier({ onVerificationSuccess }: LocationVerifierProp
 
         console.log('wasmResponse', wasmResponse);
         console.log('zkeyResponse', zkeyResponse);
-        
+
         console.log('WASM response:', wasmResponse.status, wasmResponse.statusText);
         console.log('zkey response:', zkeyResponse.status, zkeyResponse.statusText);
 

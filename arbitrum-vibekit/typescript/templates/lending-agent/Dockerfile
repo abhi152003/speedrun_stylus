@@ -1,7 +1,7 @@
 # Build stage - Context should be the typescript/ directory
 FROM node:23-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends dumb-init && \
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init git ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -15,7 +15,7 @@ RUN corepack enable
 # ------------------------------
 # 1. Copy lockfile & workspace config that affect dependency graph cache
 # ------------------------------
-COPY pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
+COPY pnpm-lock.yaml* pnpm-workspace.yaml ./
 # Copy root package.json for pnpm workspace
 COPY package.json ./
 # Copy base TS configuration so that tsconfig.base.json can be resolved
@@ -32,7 +32,7 @@ COPY templates/lending-agent/package.json ./templates/lending-agent/
 #    because source files are not yet in the build context (they are copied in step 4).
 #    This keeps the layer cache-friendly while avoiding prepare/postinstall failures.
 # ------------------------------
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # ------------------------------
 # 4. Now copy the rest of the source code

@@ -15,7 +15,7 @@ RUN npm install -g pnpm@10.7.0 typescript@5.8.3
 # ------------------------------
 # 1. Copy lockfile & workspace config that affect dependency graph cache
 # ------------------------------
-COPY pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
+COPY pnpm-lock.yaml* pnpm-workspace.yaml ./
 # Copy root package.json for pnpm workspace
 COPY package.json ./
 # Copy base TS configuration so that tsconfig.base.json can be resolved
@@ -48,7 +48,7 @@ RUN pnpm --filter pendle-agent-example... build
 FROM node:20-slim AS production
 
 # Copy pnpm config
-COPY --from=builder /app/.npmrc ./
+# COPY --from=builder /app/.npmrc ./
 
 # Create a non-root user
 RUN apt-get update && apt-get install -y --no-install-recommends dumb-init && \
