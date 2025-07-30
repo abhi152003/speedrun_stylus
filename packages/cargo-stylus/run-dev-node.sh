@@ -15,7 +15,7 @@ echo "Nitro node is running!"
 
 # Compile the Solidity contract
 echo "Compiling Solidity contract..."
-solcjs --bin --abi --optimize -o build/ contracts/aadhaar-verifier.sol
+npx solcjs --bin --abi --optimize -o build/ contracts/aadhaar-verifier.sol
 
 if [[ $? -ne 0 ]]; then
     echo "Error: Solidity compilation failed"
