@@ -21,7 +21,7 @@ export default function LocationVerifier() {
   const [areBoundingBoxInputsDisabled, setAreBoundingBoxInputsDisabled] = useState<boolean>(false);
 
   // Replace with your deployed contract address on Arbitrum Stylus
-  const CONTRACT_ADDRESS = "0x4Dc306Ca7213CFeC911da87A5A987fD0b27399D7"; // Update with your contract address
+  const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527"; // Update with your contract address
   const CONTRACT_ABI = [
     {
       inputs: [
