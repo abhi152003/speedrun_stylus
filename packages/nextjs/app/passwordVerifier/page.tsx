@@ -15,7 +15,7 @@ export default function PasswordVerifier() {
   const [error, setError] = useState<string | null>(null);
 
   // Replace with your deployed contract address on Arbitrum Stylus
-  const CONTRACT_ADDRESS = "0xe1558642d2fb6725Dd02227300191a1991530Fd5";
+  const CONTRACT_ADDRESS = "0xda52b25ddB0e3B9CC393b0690Ac62245Ac772527";
   const CONTRACT_ABI = [
     {
       inputs: [
