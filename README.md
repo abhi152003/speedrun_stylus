@@ -194,6 +194,14 @@ If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet
    ```
    This will deploy your contract to Arbitrum Sepolia and output the contract address and transaction hash.
 
+   If you encounter errors like `Command not found`, convert line endings to LF:
+
+   ```bash
+   sudo apt install dos2unix
+   dos2unix run-sepolia-deploy.sh
+   chmod +x run-sepolia-deploy.sh
+   ```
+
 3. **Configure the Frontend for Sepolia**
    - Go to the `packages/nextjs` directory:
      ```bash
