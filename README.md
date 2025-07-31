@@ -79,10 +79,15 @@ const CONTRACT_ADDRESS = "<your_new_contract_address>";
 >    cd packages/nextjs
 >    cp .env.example .env
 >    ```
+>    Open the `.env` file and set:
+>    ```env
+>    NEXT_PUBLIC_RPC_URL=http://localhost:8547
+>    NEXT_PUBLIC_PRIVATE_KEY=0xb6b15c8cb491557369f3c7d2c287b053eb229daa9c22138887752191c9520659
+>    ```
 
 Start the development server:
    ```bash
-   yarn dev
+   yarn run dev
    ```
 
 > The app will be available at [http://localhost:3000/locationVerifier](http://localhost:3000/locationVerifier).
@@ -102,7 +107,7 @@ Start the development server:
 ![Location Verifier Interface](https://github.com/user-attachments/assets/bb817dd3-5e88-4a14-a60e-c6063a4c5254)
 *Location verification interface and process flow*
 
-- Navigate to the "Debug Contracts" tab in the frontend.
+- Navigate to the "Location Verifier" tab in the frontend.
 - This feature interacts with the **Location Verifier** contract, which was generated from the `LocationVerifier.circom` circuit located in `packages/circuits`.
 - Circuit generation commands:
   ```bash
@@ -178,11 +183,10 @@ Replace `$deployment_tx` with your deployment transaction hash.
 
 If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet, follow these steps:
 
-1. **Export your private key in the terminal**
+1. **Add private key to the .env file in the cargo-stylus folder**
    ```bash
-   export PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
+   PRIVATE_KEY=your_private_key_of_your_ethereum_wallet
    ```
-
 2. **Run the Sepolia Deployment Script**
    ```bash
    cd packages/cargo-stylus/zkp_age_verifier
@@ -208,56 +212,6 @@ If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet
    yarn run dev
    ```
    Your frontend will now connect to the Arbitrum Sepolia network and interact with your deployed contract.
-
-
----
-
-## ⚡️ Cache Your Deployed Contract for Faster, Cheaper Access
-
-> 📖 Contracts deployed on Arbitrum Sepolia can use this command for gas benefits, time savings, and cheaper contract function calls. Our backend will benchmark and place bids on your behalf to ensure your contract is not evicted from the CacheManager contract, fully automating this process for you.
-
-Before caching your contract, make sure you have installed the Smart Cache CLI globally:
-
-```bash
-npm install -g smart-cache-cli
-```
-
-After deploying your contract to Arbitrum Sepolia, you can cache your contract address using the `smart-cache` CLI. Caching your contract enables:
-- 🚀 **Faster contract function calls** by reducing lookup time
-- 💸 **Cheaper interactions** by optimizing access to contract data
-- 🌐 **Seamless access** to your contract from any environment or system
-
-> 💡 **Info:** Both the `<address>` and `--deployed-by` flags are **mandatory** when adding a contract to the cache.
-
-### 📝 Simple Example
-
-```bash
-smart-cache add <CONTRACT_ADDRESS> --deployed-by <YOUR_WALLET_ADDRESS_WITH_WHOM_YOU_HAVE_DEPLOYED_CONTRACT>
-```
-
-### 🛠️ Advanced Example
-
-```bash
-smart-cache add 0xYourContractAddress \
-  --deployed-by 0xYourWalletAddress \
-  --network arbitrum-sepolia \
-  --tx-hash 0xYourDeploymentTxHash \
-  --name "YourContractName" \
-  --version "1.0.0"
-```
-
-- `<CONTRACT_ADDRESS>`: The address of your deployed contract (**required**)
-- `--deployed-by`: The wallet address you used to deploy the contract (**required**)
-- `--network arbitrum-sepolia`: By default, contracts are cached for the Arbitrum Sepolia network for optimal benchmarking and compatibility
-- `--tx-hash`, `--name`, `--version`: Optional metadata for better organization
-
-> ⚠️ **Warning:** If you omit the required fields, the command will not work as expected.
-
-> 💡 For more options, run `smart-cache add --help`.
-
-For more in-depth details and the latest updates, visit the [smart-cache-cli package on npmjs.com](https://www.npmjs.com/package/smart-cache-cli).
-
----
 
 ## 🏁 Next Steps
 
