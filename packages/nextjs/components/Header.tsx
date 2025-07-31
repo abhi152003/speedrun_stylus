@@ -20,8 +20,8 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/",
   },
   {
-    label: "Debug Contracts",
-    href: "/debug",
+    label: "Password Verifier",
+    href: "/passwordVerifier",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
 ];
