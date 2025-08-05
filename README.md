@@ -189,7 +189,7 @@ If you want to deploy your Age Verifier contract to the Arbitrum Sepolia testnet
    ```
 2. **Run the Sepolia Deployment Script**
    ```bash
-   cd packages/cargo-stylus/zkp_age_verifier
+   cd packages/cargo-stylus
    bash run-sepolia-deploy.sh
    ```
    This will deploy your contract to Arbitrum Sepolia and output the contract address and transaction hash.
