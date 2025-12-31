@@ -541,7 +541,7 @@ For more in-depth details and the latest updates, visit the [smart-cache-cli pac
 
 Radar requires Docker to be installed and running on your system. Make sure Docker is installed and running before proceeding.
 
-**Install Radar using the official installation script:**
+**Install Radar using the official installation script:** (⚠️ **Windows users must use a WSL terminal**)
 
 ```bash
 curl -L https://raw.githubusercontent.com/auditware/radar/main/install-radar.sh | bash
@@ -553,6 +553,12 @@ This will install Radar globally on your system. Alternatively, you can install 
 git clone https://github.com/auditware/radar.git
 cd radar
 bash install-radar.sh
+```
+
+**Note:** After installation, you must restart your terminal or run the following command so the system recognizes the newly installed `radar`:
+
+```bash
+source ~/.bashrc
 ```
 
 ### 🚀 Running Radar on Your Contract
