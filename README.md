@@ -296,6 +296,61 @@ For more in-depth details and the latest updates, visit the [smart-cache-cli pac
 
 ---
 
+## 🔍 Analyze Your Contract with Radar
+
+**Radar** by [Auditware](https://github.com/Auditware/radar) is a powerful static analysis tool designed to identify security vulnerabilities in Rust-based smart contracts. It uses a rule engine to detect common security issues like unchecked arithmetic, missing access controls, and account validation problems.
+
+### 📦 Installation
+
+Radar requires Docker to be installed and running on your system. Make sure Docker is installed and running before proceeding.
+
+**Install Radar using the official installation script:** (⚠️ **Windows users must use a WSL terminal**)
+
+```bash
+curl -L https://raw.githubusercontent.com/auditware/radar/main/install-radar.sh | bash
+```
+
+This will install Radar globally on your system. Alternatively, you can install from source:
+
+```bash
+git clone https://github.com/auditware/radar.git
+cd radar
+bash install-radar.sh
+```
+
+**Note:** After installation, you must restart your terminal or run the following command so the system recognizes the newly installed `radar`:
+
+```bash
+source ~/.bashrc
+```
+
+### 🚀 Running Radar on Your Contract
+
+From the root of your project, run Radar with:
+
+```bash
+radar -p .
+```
+
+This will analyze your entire project, including all contract code using Radar.
+
+Radar will output:
+- **Console output**: Real-time findings with severity levels (Low, Medium, High)
+- **JSON report**: Detailed results saved to `output.json` in your project directory
+
+**Example Output:**
+```
+[ Low ] Unchecked Arithmetics found at:
+ * /path/to/your/contract/src/lib.rs:49:34-44
+
+[i] radar completed successfully. json results were saved to disk.
+[i] Results written to /path/to/output.json
+```
+
+> 💡 **Tip**: The JSON output (`output.json`) contains detailed information about each check, including severity, certainty, and locations of issues. Review it carefully to understand what needs to be fixed.
+
+---
+
 ## 🏁 Next Steps
 
 Explore more challenges or contribute to this project!
